@@ -1,0 +1,65 @@
+!!ARBfp1.0
+# cgc version 3.0.0016, build date Feb 11 2011
+# command line args: -profile arbfp1 -quiet
+#vendor NVIDIA Corporation
+#version 3.0.0.16
+#profile arbfp1
+#program pmain
+#semantic pmain.fog_color_and_max_alpha
+#semantic pmain.bump_map
+#semantic pmain.sky_reflection_map
+#semantic pmain.bump_weights
+#semantic pmain.fragment_constants
+#var float4 normal_and_alpha : $vin.TEXCOORD0 : TEX0 : 0 : 1
+#var float4 water_to_eye_dir_and_fog_factor : $vin.TEXCOORD1 : TEX1 : 1 : 1
+#var float4 bump_coords_01 : $vin.TEXCOORD2 : TEX2 : 2 : 1
+#var float4 bump_coords_23 : $vin.TEXCOORD3 : TEX3 : 3 : 1
+#var float4 fog_color_and_max_alpha :  : c[0] : 4 : 1
+#var sampler2D bump_map :  : texunit 0 : 5 : 1
+#var sampler2D sky_reflection_map :  : texunit 1 : 6 : 1
+#var float4 bump_weights :  : c[1] : 7 : 1
+#var float4 fragment_constants :  : c[2] : 8 : 1
+#var float4 pmain : $vout.COLOR : COL : -1 : 1
+#const c[3] = 1 0.60000002 2 0.5
+#const c[4] = 0.1 0.17 0.27000001 0.30000001
+PARAM c[5] = { program.local[0..2],
+		{ 1, 0.60000002, 2, 0.5 },
+		{ 0.1, 0.17, 0.27000001, 0.30000001 } };
+TEMP R0;
+TEMP R1;
+TEMP R2;
+TEX R0.xyz, fragment.texcoord[2].zwzw, texture[0], 2D;
+MUL R1.xyz, R0, c[1].y;
+TEX R0.xyz, fragment.texcoord[2], texture[0], 2D;
+MAD R1.xyz, R0, c[1].x, R1;
+TEX R0.xyz, fragment.texcoord[3], texture[0], 2D;
+MAD R2.xyz, R0, c[1].z, R1;
+DP3 R0.w, fragment.texcoord[0], fragment.texcoord[0];
+RSQ R0.w, R0.w;
+MUL R1.xyz, R0.w, fragment.texcoord[0];
+TEX R0.xyz, fragment.texcoord[3].zwzw, texture[0], 2D;
+MAD R0.xyz, R0, c[1].w, R2;
+MAD R0.xyz, R0, c[2].x, -R1;
+ADD R0.xyz, R0, -c[3].x;
+MUL R0.xyz, R1.z, R0;
+DP3 R0.w, fragment.texcoord[1], fragment.texcoord[1];
+MAD R0.xyz, R0, c[3].y, R1;
+RSQ R0.w, R0.w;
+MUL R1.xyz, R0.w, fragment.texcoord[1];
+DP3 R2.x, R1, R0;
+MUL R0.x, -R2, R0.z;
+MAD R0.x, -R0, c[3].z, -R1.z;
+MUL R0.w, fragment.texcoord[0], c[0];
+MOV R0.y, c[3].w;
+MUL R1.w, R0, c[4];
+MOV R1.xyz, c[4];
+TEX R0.xyz, R0, texture[1], 2D;
+ADD R0, R0, -R1;
+ADD R2.x, -R2, c[3];
+MAD R1, R2.x, R0, R1;
+MOV R0.w, c[3].x;
+MOV R0.xyz, c[0];
+ADD R1, R1, -R0;
+MAD result.color, fragment.texcoord[1].w, R1, R0;
+END
+# 33 instructions, 3 R-regs

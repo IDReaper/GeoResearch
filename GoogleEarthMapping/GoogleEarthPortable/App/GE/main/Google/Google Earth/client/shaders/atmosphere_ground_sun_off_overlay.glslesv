@@ -1,0 +1,111 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+attribute vec4 ig_Vertex;
+attribute vec4 ig_Color;
+attribute vec3 ig_Normal;
+attribute vec4 ig_MultiTexCoord0;
+attribute vec4 ig_MultiTexCoord1;
+varying vec4 ig_TexCoord[4];
+
+// glslv output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslv
+// source file: atmosphere_ground_sun_off_overlay.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslv
+//program vmain
+//semantic vmain.modelView
+//semantic vmain.modelViewProj
+//semantic vmain.worldOriginInView
+//semantic vmain.textureMatrix
+//semantic vmain.dirToCameraAndFogDensity
+//semantic vmain.groundSunOffVertexParams
+//var float4x4 modelView :  : ig_ModelViewMatrix[0], 4 : 2 : 1
+//var float4x4 modelViewProj :  : ig_ModelViewProjectionMatrix[0], 4 : 3 : 1
+//var float3 worldOriginInView :  : _worldOriginInView : 4 : 1
+//var float4x4 textureMatrix :  : ig_TextureMatrix[0], 4 : 5 : 1
+//var float4 dirToCameraAndFogDensity :  : _dirToCameraAndFogDensity2 : 6 : 1
+//var float4 groundSunOffVertexParams :  : _groundSunOffVertexParams2 : 7 : 1
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float4 texCoord : $vin.TEXCOORD0 : ATTR8 : 1 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.texCoordAndFogFactor : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.rayleighT : $vout.TEXCOORD1 : TEX1 : -1 : 1
+
+struct GroundSunOffVertOutput {
+    vec4 _pos;
+    vec4 _texCoordAndFogFactor;
+    vec4 _rayleighT1;
+};
+
+uniform mat4 ig_ModelViewMatrix;
+uniform mat4 ig_ModelViewProjectionMatrix;
+uniform vec3 _worldOriginInView;
+uniform mat4 ig_TextureMatrix;
+uniform vec4 _dirToCameraAndFogDensity2;
+uniform vec4 _groundSunOffVertexParams2;
+float _projected_length0007;
+float _rayleighT0007;
+float _fogTemp0007;
+GroundSunOffVertOutput _vertOutput0007;
+vec4 _r0009;
+vec3 _TMP18;
+vec3 _v0019;
+float _x0023;
+vec4 _r0027;
+float _TMP36;
+float _x0037;
+vec4 _r0043;
+
+ // main procedure, the original name was vmain
+void main()
+{
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0009.x = dot(ig_ModelViewMatrix[0], ig_Vertex);
+    _r0009.y = dot(ig_ModelViewMatrix[1], ig_Vertex);
+    _r0009.z = dot(ig_ModelViewMatrix[2], ig_Vertex);
+*/
+    _r0009 = ig_ModelViewMatrix * ig_Vertex;
+
+    _v0019 = _r0009.xyz - _worldOriginInView;
+    _x0023 = dot(_v0019, _v0019);
+    _TMP18 = inversesqrt(_x0023)*_v0019;
+    _projected_length0007 = dot(_dirToCameraAndFogDensity2.xyz, _TMP18);
+    _rayleighT0007 = (_projected_length0007 + _groundSunOffVertexParams2.x)*_groundSunOffVertexParams2.y;
+
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0027.x = dot(ig_ModelViewProjectionMatrix[0], ig_Vertex);
+    _r0027.y = dot(ig_ModelViewProjectionMatrix[1], ig_Vertex);
+    _r0027.z = dot(ig_ModelViewProjectionMatrix[2], ig_Vertex);
+    _r0027.w = dot(ig_ModelViewProjectionMatrix[3], ig_Vertex);
+*/
+    _r0027 = ig_ModelViewProjectionMatrix * ig_Vertex;
+
+    _fogTemp0007 = _dirToCameraAndFogDensity2.w*_r0027.z;
+    _x0037 = -(_fogTemp0007*_fogTemp0007);
+    _TMP36 = pow(2.71828198E+000, _x0037);
+    _vertOutput0007._pos = _r0027;
+    _vertOutput0007._pos.z = min(_r0027.z, _r0027.w);
+
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0043.x = dot(ig_TextureMatrix[0], ig_MultiTexCoord0);
+    _r0043.y = dot(ig_TextureMatrix[1], ig_MultiTexCoord0);
+    _r0043.w = dot(ig_TextureMatrix[3], ig_MultiTexCoord0);
+*/
+    _r0043 = ig_TextureMatrix * ig_MultiTexCoord0;
+
+    _vertOutput0007._texCoordAndFogFactor.xyz = _r0043.xyw;
+    _vertOutput0007._texCoordAndFogFactor.w = _TMP36;
+    ig_TexCoord[0] = _vertOutput0007._texCoordAndFogFactor;
+    ig_TexCoord[1] = vec4(_rayleighT0007, _rayleighT0007, _rayleighT0007, _rayleighT0007);
+    gl_Position = _vertOutput0007._pos;
+    return;
+} // main end

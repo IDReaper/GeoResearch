@@ -1,0 +1,44 @@
+ps_2_0
+// cgc version 3.0.0016, build date Feb 11 2011
+// command line args: -profile ps_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 3.0.0.16
+//profile ps_2_0
+//program pmain
+//semantic pmain.groundTexture
+//semantic pmain.blendTexture
+//semantic pmain.groundRayleighMap
+//semantic pmain.atmosphereCustomColor
+//semantic pmain.groundFogColor
+//semantic pmain.groundSunOffPixelParams
+//semantic pmain.blendUnpopPixelParams
+//var float4 texCoordAndFogFactor : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 blendTexCoordAndRayleighT : $vin.TEXCOORD1 : TEX1 : 1 : 1
+//var sampler2D groundTexture :  : texunit 0 : 2 : 1
+//var sampler2D blendTexture :  : texunit 1 : 3 : 1
+//var sampler2D groundRayleighMap :  : texunit 2 : 4 : 1
+//var float4 atmosphereCustomColor :  : c[0] : 5 : 1
+//var float4 groundFogColor :  : c[1] : 6 : 1
+//var float4 groundSunOffPixelParams :  : c[2] : 7 : 1
+//var float4 blendUnpopPixelParams :  : c[3] : 8 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+dcl_2d s0
+dcl_2d s1
+dcl_2d s2
+dcl t0.xyzw
+dcl t1.xyz
+texld r1, t0, s0
+mov r0.y, t1.z
+mov r0.x, c2
+abs r3.x, c3
+texld r2, r0, s2
+texld r0, t1, s1
+add r0, -r1, r0
+mad r0, r0, c3.x, r1
+cmp r0, -r3.x, r1, r0
+mul r0, r0, c0
+add r0.xyz, r0, r2
+add r0.xyz, r0, -c1
+mad r0.xyz, t0.w, r0, c1
+mul r0.w, r0, c3.y
+mov oC0, r0

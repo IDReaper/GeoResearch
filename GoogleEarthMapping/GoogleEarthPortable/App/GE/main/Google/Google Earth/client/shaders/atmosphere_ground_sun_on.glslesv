@@ -1,0 +1,248 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+attribute vec4 ig_Vertex;
+attribute vec3 ig_Normal;
+attribute vec4 ig_MultiTexCoord0;
+attribute vec4 ig_MultiTexCoord1;
+varying vec4 ig_TexCoord[4];
+
+// glslv output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslv
+// source file: atmosphere_ground_sun_on.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslv
+//program vmain
+//semantic vmain.modelView
+//semantic vmain.modelViewProj
+//semantic vmain.worldOriginInView
+//semantic vmain.textureMatrix
+//semantic vmain.cameraToSunDirAndExposure
+//semantic vmain.lightDirectionInModel
+//semantic vmain.atmosphereCustomState
+//semantic vmain.cameraLightInfo
+//semantic vmain.startupConsts
+//semantic vmain.sunsetAmbientAndFogDensity
+//var float4x4 modelView :  : ig_ModelViewMatrix[0], 4 : 3 : 1
+//var float4x4 modelViewProj :  : ig_ModelViewProjectionMatrix[0], 4 : 4 : 1
+//var float3 worldOriginInView :  : _worldOriginInView : 5 : 1
+//var float4x4 textureMatrix :  : ig_TextureMatrix[0], 4 : 6 : 1
+//var float4 cameraToSunDirAndExposure :  : _cameraToSunDirAndExposure : 7 : 1
+//var float3 lightDirectionInModel :  : _lightDirectionInModel : 8 : 1
+//var float4 atmosphereCustomState :  : _atmosphereCustomState : 9 : 1
+//var float4 cameraLightInfo :  : _cameraLightInfo : 10 : 1
+//var float4 startupConsts :  : _startupConsts : 11 : 1
+//var float4 sunsetAmbientAndFogDensity :  : _sunsetAmbientAndFogDensity : 12 : 1
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float3 normal : $vin.NORMAL : ATTR2 : 1 : 1
+//var float4 texCoord : $vin.TEXCOORD0 : ATTR8 : 2 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float3 vmain.rayleigh : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float3 vmain.adjustedMie : $vout.TEXCOORD1 : TEX1 : -1 : 1
+//var float4 vmain.texCoordAndFogFactor : $vout.TEXCOORD2 : TEX2 : -1 : 1
+
+struct VertexOutput {
+    vec4 _pos;
+    vec3 _rayleigh;
+    vec3 _adjustedMie;
+    vec4 _texCoordAndFogFactor;
+};
+
+uniform mat4 ig_ModelViewMatrix;
+uniform mat4 ig_ModelViewProjectionMatrix;
+uniform vec3 _worldOriginInView;
+uniform mat4 ig_TextureMatrix;
+uniform vec4 _cameraToSunDirAndExposure;
+uniform vec3 _lightDirectionInModel;
+uniform vec4 _atmosphereCustomState;
+uniform vec4 _cameraLightInfo;
+uniform vec4 _startupConsts;
+uniform vec4 _sunsetAmbientAndFogDensity;
+vec3 _cameraPos0012;
+vec3 _unprojectedVertPos0012;
+float _nDotLdefault0012;
+float _nDotLmodel0012;
+float _nDotL0012;
+vec3 _rayDir0012;
+float _farDist0012;
+vec3 _startPos0012;
+float _cameraAngle0012;
+float _lightAngle0012;
+float _cameraOffset0012;
+float _scaleSum0012;
+float _sampleLength0012;
+float _scaledLength0012;
+vec3 _sampleRay0012;
+vec3 _samplePoint0012;
+vec3 _frontColor0012;
+float _sampleScatter10012;
+float _closeToHorizon0012;
+float _closeToCamera0012;
+float _scaledRayleighFactor0012;
+float _darkShadedAmbientFactor0012;
+float _nightAmbientFactor0012;
+float _ambientFactor0012;
+vec3 _headlampAmbientContribution0012;
+vec3 _ambientContribution0012;
+float _closeToNoonFactor0012;
+float _fogTemp0012;
+VertexOutput _vertOutput0012;
+vec4 _r0014;
+vec3 _TMP23;
+float _x0028;
+float _x0034;
+float _TMP35;
+float _b0040;
+float _TMP45;
+float _a0046;
+float _TMP49;
+float _b0050;
+float _c0050;
+float _determ0050;
+float _b0054;
+float _TMP55;
+vec3 _a0060;
+float _b0062;
+float _TMP65;
+float _x0066;
+float _TMP67;
+float _x0068;
+float _TMP71;
+float _x0072;
+float _TMP73;
+float _x0074;
+float _TMP81;
+float _a0082;
+float _TMP85;
+float _x0086;
+vec3 _x0090;
+vec3 _TMP91;
+float _TMP101;
+float _TMP105;
+float _x0106;
+vec4 _r0110;
+vec3 _b0120;
+vec3 _x0122;
+vec3 _TMP123;
+vec3 _b0128;
+vec4 _r0130;
+
+ // main procedure, the original name was vmain
+void main()
+{
+
+
+    _cameraPos0012 = -_worldOriginInView;
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0014.x = dot(ig_ModelViewMatrix[0], ig_Vertex);
+    _r0014.y = dot(ig_ModelViewMatrix[1], ig_Vertex);
+    _r0014.z = dot(ig_ModelViewMatrix[2], ig_Vertex);
+*/
+_r0014 = ig_ModelViewMatrix * ig_Vertex;
+    _unprojectedVertPos0012 = _r0014.xyz - _worldOriginInView;
+    _x0028 = dot(_unprojectedVertPos0012, _unprojectedVertPos0012);
+    _TMP23 = inversesqrt(_x0028)*_unprojectedVertPos0012;
+    _nDotLdefault0012 = dot(_TMP23, _cameraToSunDirAndExposure.xyz);
+    _nDotLmodel0012 = dot(ig_Normal, _lightDirectionInModel);
+    _nDotL0012 = _atmosphereCustomState.x == 0.00000000E+000 ? _nDotLdefault0012 : _nDotLmodel0012;
+    _x0034 = 3.00000000E+000*_nDotL0012;
+    _b0040 = min(1.00000000E+000, _x0034);
+    _TMP35 = max(0.00000000E+000, _b0040);
+    _rayDir0012 = _unprojectedVertPos0012 - _cameraPos0012;
+    _a0046 = dot(_rayDir0012, _rayDir0012);
+    _TMP45 = 1.00000000E+000/inversesqrt(_a0046);
+    _farDist0012 = _TMP45;
+    _rayDir0012 = _rayDir0012/vec3(_TMP45, _TMP45, _TMP45);
+    _startPos0012 = _cameraPos0012;
+    if (_cameraLightInfo.x >= 1.02665412E+000) { // if begin
+        _b0050 = 2.00000000E+000*dot(_cameraPos0012, _rayDir0012);
+        _c0050 = _cameraLightInfo.w - 1.05401874E+000;
+        _b0054 = _b0050*_b0050 - 4.00000000E+000*_c0050;
+        _determ0050 = max(0.00000000E+000, _b0054);
+        _TMP55 = 1.00000000E+000/inversesqrt(_determ0050);
+        _TMP49 = 5.00000000E-001*(-_b0050 - _TMP55);
+        _startPos0012 = _cameraPos0012 + _rayDir0012*_TMP49;
+        _farDist0012 = _TMP45 - _TMP49;
+    } // end if
+    _a0060 = -_rayDir0012;
+    _b0062 = dot(_a0060, _TMP23);
+    _cameraAngle0012 = max(0.00000000E+000, _b0062);
+    _lightAngle0012 = dot(_cameraToSunDirAndExposure.xyz, _TMP23);
+    _x0066 = 1.00000000E+000 - _cameraAngle0012;
+    _x0068 = -2.86999997E-003 + _x0066*(4.58999991E-001 + _x0066*(3.82999992E+000 + _x0066*(-6.80000019E+000 + _x0066*5.25000000E+000)));
+    _TMP67 = pow(2.71828198E+000, _x0068);
+    _TMP65 = 1.50000006E-001*_TMP67;
+    _x0072 = 1.00000000E+000 - _lightAngle0012;
+    _x0074 = -2.86999997E-003 + _x0072*(4.58999991E-001 + _x0072*(3.82999992E+000 + _x0072*(-6.80000019E+000 + _x0072*5.25000000E+000)));
+    _TMP73 = pow(2.71828198E+000, _x0074);
+    _TMP71 = 1.50000006E-001*_TMP73;
+    _cameraOffset0012 = _startupConsts.x*_TMP65;
+    _scaleSum0012 = _TMP71 + _TMP65;
+    _sampleLength0012 = _farDist0012/2.00000000E+000;
+    _scaledLength0012 = _sampleLength0012*3.75176468E+001;
+    _sampleRay0012 = _rayDir0012*_sampleLength0012;
+    _samplePoint0012 = _startPos0012 + _sampleRay0012*5.00000000E-001;
+    _a0082 = dot(_samplePoint0012, _samplePoint0012);
+    _TMP81 = 1.00000000E+000/inversesqrt(_a0082);
+    _x0086 = 2.50117630E+002*(1.00000000E+000 - _TMP81);
+    _TMP85 = pow(2.71828198E+000, _x0086);
+    _sampleScatter10012 = _TMP85*_scaleSum0012 - _cameraOffset0012;
+    _x0090 = -_sampleScatter10012*vec3( 1.88559800E-001, 3.10178369E-001, 6.29694700E-001);
+    _TMP91 = vec3(pow(2.71828198E+000, _x0090.x), pow(2.71828198E+000, _x0090.y), pow(2.71828198E+000, _x0090.z));
+    _frontColor0012 = _TMP91*(_TMP85*_scaledLength0012);
+    _samplePoint0012 = _samplePoint0012 + _sampleRay0012;
+    _a0082 = dot(_samplePoint0012, _samplePoint0012);
+    _TMP81 = 1.00000000E+000/inversesqrt(_a0082);
+    _x0086 = 2.50117630E+002*(1.00000000E+000 - _TMP81);
+    _TMP85 = pow(2.71828198E+000, _x0086);
+    _sampleScatter10012 = _TMP85*_scaleSum0012 - _cameraOffset0012;
+    _x0090 = -_sampleScatter10012*vec3( 1.88559800E-001, 3.10178369E-001, 6.29694700E-001);
+    _TMP91 = vec3(pow(2.71828198E+000, _x0090.x), pow(2.71828198E+000, _x0090.y), pow(2.71828198E+000, _x0090.z));
+    _frontColor0012 = _frontColor0012 + _TMP91*(_TMP85*_scaledLength0012);
+    _closeToHorizon0012 = 1.00000000E+000 - _cameraAngle0012;
+    _closeToCamera0012 = 1.00000000E+000 - _closeToHorizon0012*_closeToHorizon0012;
+    _scaledRayleighFactor0012 = _startupConsts.z*pow(_closeToHorizon0012, _startupConsts.y);
+    _darkShadedAmbientFactor0012 = 1.00000000E+000 - _TMP35;
+    _TMP101 = dot(vec3( 3.00000012E-001, 5.89999974E-001, 1.09999999E-001), _TMP91);
+    _nightAmbientFactor0012 = 1.00000000E+000 - _TMP101*_TMP101;
+    _ambientFactor0012 = _closeToCamera0012*(_darkShadedAmbientFactor0012 + _nightAmbientFactor0012);
+    _headlampAmbientContribution0012 = vec3( 1.19999997E-001, 1.19999997E-001, 1.50000006E-001)*_ambientFactor0012;
+    _ambientContribution0012 = _headlampAmbientContribution0012 + _sunsetAmbientAndFogDensity.xyz;
+    _closeToNoonFactor0012 = _closeToCamera0012*_cameraLightInfo.y;
+    _fogTemp0012 = _sunsetAmbientAndFogDensity.w*_farDist0012;
+    _x0106 = -(_fogTemp0012*_fogTemp0012);
+    _TMP105 = pow(2.71828198E+000, _x0106);
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0110.x = dot(ig_ModelViewProjectionMatrix[0], ig_Vertex);
+    _r0110.y = dot(ig_ModelViewProjectionMatrix[1], ig_Vertex);
+    _r0110.z = dot(ig_ModelViewProjectionMatrix[2], ig_Vertex);
+    _r0110.w = dot(ig_ModelViewProjectionMatrix[3], ig_Vertex);
+*/
+_r0110 = ig_ModelViewProjectionMatrix * ig_Vertex;
+    _b0120 = (_frontColor0012*vec3( 3.75127792E-001, 6.17080212E-001, 1.25273764E+000))*_scaledRayleighFactor0012;
+    _vertOutput0012._rayleigh.xyz = min(vec3( 5.00000000E-001, 5.00000000E-001, 8.00000012E-001), _b0120);
+    _x0122 = (_TMP91 + vec3(_closeToNoonFactor0012, _closeToNoonFactor0012, _closeToNoonFactor0012))*_TMP35 + _ambientContribution0012;
+    _b0128 = min(vec3( 1.00000000E+000, 1.00000000E+000, 1.00000000E+000), _x0122);
+    _TMP123 = max(vec3( 0.00000000E+000, 0.00000000E+000, 0.00000000E+000), _b0128);
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0130.x = dot(ig_TextureMatrix[0], ig_MultiTexCoord0);
+    _r0130.y = dot(ig_TextureMatrix[1], ig_MultiTexCoord0);
+    _r0130.w = dot(ig_TextureMatrix[3], ig_MultiTexCoord0);
+*/
+_r0130 = ig_TextureMatrix * ig_MultiTexCoord0;
+    _vertOutput0012._texCoordAndFogFactor.xyz = _r0130.xyw;
+    _vertOutput0012._texCoordAndFogFactor.w = _TMP105;
+    ig_TexCoord[2] = _vertOutput0012._texCoordAndFogFactor;
+    ig_TexCoord[0].xyz = _vertOutput0012._rayleigh;
+    ig_TexCoord[1].xyz = _TMP123;
+    gl_Position = _r0110;
+    return;
+} // main end

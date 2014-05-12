@@ -1,0 +1,45 @@
+vs_2_0
+// cgc version 3.0.0016, build date Feb 11 2011
+// command line args: -profile vs_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 3.0.0.16
+//profile vs_2_0
+//program vmain
+//semantic vmain.modelViewProj
+//semantic vmain.textureMatrix
+//semantic vmain.blendMorphVertexParams
+//semantic vmain.cameraToSunDirAndExposure
+//semantic vmain.lightDirectionInModel
+//var float4 position : $vin.POSITION0 : ATTR0 : 0 : 1
+//var float3 normal : $vin.NORMAL0 : ATTR1 : 1 : 1
+//var float4 groundTexCoord : $vin.TEXCOORD0 : ATTR2 : 2 : 1
+//var float4 morphVec : $vin.TEXCOORD1 : ATTR3 : 3 : 1
+//var float4x4 modelViewProj :  : c[0], 4 : 4 : 1
+//var float4x4 textureMatrix :  : c[4], 4 : 5 : 1
+//var float4 blendMorphVertexParams :  : c[8] : 6 : 1
+//var float4 cameraToSunDirAndExposure :  : c[9] : 7 : 1
+//var float3 lightDirectionInModel :  : c[10] : 8 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.transformedCoords : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.diffuse_factor : $vout.TEXCOORD1 : TEX1 : -1 : 1
+//const c[11] = 0 1
+dcl_position0 v0
+def c11, 0.00000000, 1.00000000, 0, 0
+dcl_texcoord1 v3
+dcl_normal0 v1
+dcl_texcoord0 v2
+mul r0.xyz, v3, c8.w
+add r0.xyz, r0, v0
+mov r0.w, v0
+dp4 oPos.w, r0, c3
+dp4 oPos.z, r0, c2
+dp4 oPos.y, r0, c1
+dp4 oPos.x, r0, c0
+dp3 r0.x, v1, c10
+max r0.x, r0, c11
+add r0.x, r0, c9.w
+mov oT1.yzw, c11.x
+mad oT0.zw, v2.xyxy, c8.z, c8.xyxy
+dp4 oT0.y, v2, c5
+dp4 oT0.x, v2, c4
+min oT1.x, r0, c11.y

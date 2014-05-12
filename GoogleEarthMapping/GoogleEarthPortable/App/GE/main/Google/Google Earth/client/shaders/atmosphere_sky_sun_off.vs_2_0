@@ -1,0 +1,23 @@
+vs_2_0
+// cgc version 3.0.0016, build date Feb 11 2011
+// command line args: -profile vs_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 3.0.0.16
+//profile vs_2_0
+//program vmain
+//semantic vmain.modelViewProj
+//semantic vmain.skySunOffVertexParams
+//var float4 position : $vin.POSITION0 : ATTR0 : 0 : 1
+//var float4x4 modelViewProj :  : c[0], 4 : 1 : 1
+//var float4 skySunOffVertexParams :  : c[4] : 2 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.rayleighT : $vout.TEXCOORD0 : TEX0 : -1 : 1
+dcl_position0 v0
+add r0.x, v0.y, c4
+mul oT0, r0.x, c4.y
+dp4 r0.x, v0, c3
+dp4 r0.y, v0, c2
+min oPos.z, r0.y, r0.x
+mov oPos.w, r0.x
+dp4 oPos.y, v0, c1
+dp4 oPos.x, v0, c0

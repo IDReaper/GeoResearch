@@ -1,0 +1,33 @@
+!!ARBvp1.0
+# cgc version 3.0.0016, build date Feb 11 2011
+# command line args: -profile arbvp1 -quiet
+#vendor NVIDIA Corporation
+#version 3.0.0.16
+#profile arbvp1
+#program vmain
+#semantic vmain.modelViewProj
+#semantic vmain.textureMatrix
+#semantic vmain.blendMorphVertexParams
+#var float4 position : $vin.POSITION : POSITION : 0 : 1
+#var float4 texCoord : $vin.TEXCOORD0 : TEXCOORD0 : 1 : 1
+#var float4 morphVec : $vin.TEXCOORD1 : TEXCOORD1 : 2 : 1
+#var float4x4 modelViewProj :  : c[1], 4 : 3 : 1
+#var float4x4 textureMatrix :  : c[5], 4 : 4 : 1
+#var float4 blendMorphVertexParams :  : c[9] : 5 : 1
+#var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+#var float4 vmain.texCoord : $vout.TEXCOORD0 : TEX0 : -1 : 1
+PARAM c[10] = { program.local[0..9] };
+TEMP R0;
+MUL R0.xyz, vertex.texcoord[1], c[9].w;
+MOV R0.w, vertex.position;
+ADD R0.xyz, R0, vertex.position;
+DP4 result.position.w, R0, c[4];
+DP4 result.position.z, R0, c[3];
+DP4 result.position.y, R0, c[2];
+DP4 result.position.x, R0, c[1];
+DP4 result.texcoord[0].w, vertex.texcoord[0], c[8];
+DP4 result.texcoord[0].z, vertex.texcoord[0], c[7];
+DP4 result.texcoord[0].y, vertex.texcoord[0], c[6];
+DP4 result.texcoord[0].x, vertex.texcoord[0], c[5];
+END
+# 11 instructions, 1 R-regs

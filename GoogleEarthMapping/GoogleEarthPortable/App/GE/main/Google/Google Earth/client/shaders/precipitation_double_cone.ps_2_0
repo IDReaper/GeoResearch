@@ -1,0 +1,60 @@
+ps_2_0
+// cgc version 2.1.0016, build date Nov 20 2008
+// command line args: -profile ps_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 2.1.0.16
+//profile ps_2_0
+//program pmain
+//semantic pmain.pixel_args
+//semantic pmain.time_scrolls
+//semantic pmain.texture0
+//semantic pmain.texture1
+//semantic pmain.texture2
+//semantic pmain.texture3
+//var float4 tex_coord : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 pixel_args :  : c[0] : 1 : 1
+//var float4 time_scrolls :  : c[1] : 2 : 1
+//var sampler2D texture0 :  : texunit 0 : 3 : 1
+//var sampler2D texture1 :  : texunit 1 : 4 : 1
+//var sampler2D texture2 :  : texunit 2 : 5 : 1
+//var sampler2D texture3 :  : texunit 3 : 6 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+//const c[2] = 8 2 4
+dcl_2d s0
+dcl_2d s1
+dcl_2d s2
+dcl_2d s3
+def c2, 8.00000000, 2.00000000, 4.00000000, 0
+dcl t0
+rcp r0.x, t0.w
+mul r4.xy, t0, r0.x
+mul r0.xy, r4, c2.y
+mul r1.xy, r4, c2.z
+mul r3.xy, r4, c2.x
+add r0.y, r0, c1
+add r2.y, r4, c1.x
+mov r2.x, r4
+add r3.y, r3, c1.w
+add r1.y, r1, c1.z
+texld r4, r3, s3
+texld r3, r2, s0
+texld r2, r1, s2
+texld r5, r0, s1
+add r0.x, r3, r5
+add r0.x, r0, r2
+add r0.x, r4, r0
+rcp r0.x, r0.x
+mul r1.x, r0, r5
+mul r5.xyz, r5, r1.x
+mul r1.x, r0, r3
+mad r3.xyz, r3, r1.x, r5
+mul r1.x, r0, r2
+mad r2.xyz, r2, r1.x, r3
+mul r1.x, r4, r0
+mad r2.xyz, r4, r1.x, r2
+rsq r0.x, t0.z
+rcp r1.x, r0.x
+mul r0.x, r2, c0.z
+mul r0.x, r0, r1
+mul r2.w, r0.x, c0.y
+mov oC0, r2

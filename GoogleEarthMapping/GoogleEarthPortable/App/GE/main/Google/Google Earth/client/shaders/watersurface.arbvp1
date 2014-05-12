@@ -1,0 +1,66 @@
+!!ARBvp1.0
+# cgc version 3.0.0016, build date Feb 11 2011
+# command line args: -profile arbvp1 -quiet
+#vendor NVIDIA Corporation
+#version 3.0.0.16
+#profile arbvp1
+#program vmain
+#semantic vmain.model_view_proj
+#semantic vmain.clip_to_water_mat
+#semantic vmain.fog_density
+#semantic vmain.eye_pos_and_anim_time
+#semantic vmain.wave_scales
+#var float4 position : $vin.POSITION : POSITION : 0 : 1
+#var float4 color : $vin.COLOR0 : COLOR0 : 1 : 1
+#var float2 tex_coord : $vin.TEXCOORD0 : TEXCOORD0 : 2 : 1
+#var float4x4 model_view_proj :  : c[1], 4 : 3 : 1
+#var float4x4 clip_to_water_mat :  : c[5], 4 : 4 : 1
+#var float4 fog_density :  : c[9] : 5 : 1
+#var float4 eye_pos_and_anim_time :  : c[10] : 6 : 1
+#var float4 wave_scales :  : c[11] : 7 : 1
+#var float4 vmain.position : $vout.POSITION : HPOS : -1 : 1
+#var float4 vmain.normal_and_alpha : $vout.TEXCOORD0 : TEX0 : -1 : 1
+#var float4 vmain.water_to_eye_dir_and_fog_factor : $vout.TEXCOORD1 : TEX1 : -1 : 1
+#var float4 vmain.bump_coords_01 : $vout.TEXCOORD2 : TEX2 : -1 : 1
+#var float4 vmain.bump_coords_23 : $vout.TEXCOORD3 : TEX3 : -1 : 1
+#const c[0] = 2.718282 4 0 -2
+#const c[12] = 0 1 -4
+PARAM c[13] = { { 2.718282, 4, 0, -2 },
+		program.local[1..11],
+		{ 0, 1, -4 } };
+TEMP R0;
+TEMP R1;
+TEMP R2;
+DP4 R2.w, vertex.position, c[3];
+DP4 R1.w, vertex.position, c[4];
+MOV R1.z, R2.w;
+DP4 R1.x, vertex.position, c[1];
+DP4 R1.y, vertex.position, c[2];
+DP4 R0.z, R1, c[7];
+DP4 R0.x, R1, c[5];
+DP4 R0.y, R1, c[6];
+DP3 R0.w, R0, R0;
+RSQ R0.w, R0.w;
+MUL R0.xyz, R0.w, R0;
+ADD R2.xyz, -R0, c[10];
+DP3 R0.w, R2, R2;
+RSQ R0.w, R0.w;
+MUL result.texcoord[1].xyz, R0.w, R2;
+MOV R0.w, vertex.color;
+MOV result.texcoord[0], R0;
+MOV R2.xyz, c[0].yzww;
+MUL R0.xy, R2, c[10].w;
+MOV result.position, R1;
+MAD result.texcoord[2].zw, vertex.texcoord[0].xyxy, c[11].y, R0.xyxy;
+MOV R0.xyz, c[12];
+MUL R1.zw, R0.xyxy, c[10].w;
+MUL R0.zw, R0.xyzx, c[10].w;
+MUL R1.xy, R2.yzzw, c[10].w;
+MUL R0.y, R2.w, c[9].x;
+MUL R0.x, R0.y, R0.y;
+MAD result.texcoord[2].xy, vertex.texcoord[0], c[11].x, R1;
+MAD result.texcoord[3].zw, -vertex.texcoord[0].xyxy, c[11].w, R1;
+MAD result.texcoord[3].xy, vertex.texcoord[0], c[11].z, R0.zwzw;
+POW result.texcoord[1].w, c[0].x, -R0.x;
+END
+# 31 instructions, 3 R-regs

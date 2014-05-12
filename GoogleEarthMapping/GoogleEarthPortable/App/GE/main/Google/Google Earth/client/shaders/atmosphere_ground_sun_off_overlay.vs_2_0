@@ -1,0 +1,60 @@
+vs_2_0
+// cgc version 3.0.0016, build date Feb 11 2011
+// command line args: -profile vs_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 3.0.0.16
+//profile vs_2_0
+//program vmain
+//semantic vmain.modelView
+//semantic vmain.modelViewProj
+//semantic vmain.worldOriginInView
+//semantic vmain.textureMatrix
+//semantic vmain.dirToCameraAndFogDensity
+//semantic vmain.groundSunOffVertexParams
+//semantic vmain.blendMorphVertexParams
+//var float4 position : $vin.POSITION0 : ATTR0 : 0 : 1
+//var float4 texCoord : $vin.TEXCOORD0 : ATTR1 : 1 : 1
+//var float4 morphVec : $vin.TEXCOORD1 : ATTR2 : 2 : 1
+//var float4x4 modelView :  : c[0], 4 : 3 : 1
+//var float4x4 modelViewProj :  : c[4], 4 : 4 : 1
+//var float3 worldOriginInView :  : c[12] : 5 : 1
+//var float4x4 textureMatrix :  : c[8], 4 : 6 : 1
+//var float4 dirToCameraAndFogDensity :  : c[13] : 7 : 1
+//var float4 groundSunOffVertexParams :  : c[14] : 8 : 1
+//var float4 blendMorphVertexParams :  : c[15] : 9 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.texCoordAndFogFactor : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.blendTexCoordAndRayleighT : $vout.TEXCOORD1 : TEX1 : -1 : 1
+//const c[16] = 2.718282
+def c16, 2.71828198, 0, 0, 0
+dcl_position0 v0
+dcl_texcoord1 v2
+dcl_texcoord0 v1
+mul r0.xyz, v2, c15.w
+add r1.xyz, r0, v0
+mov r1.w, v0
+dp4 r0.z, r1, c2
+dp4 r0.x, r1, c0
+dp4 r0.y, r1, c1
+add r0.xyz, r0, -c12
+dp3 r0.w, r0, r0
+rsq r0.w, r0.w
+mul r0.xyz, r0.w, r0
+dp3 r0.x, r0, c13
+dp4 r0.y, r1, c6
+add r0.x, r0, c14
+mul r0.z, r0.y, c13.w
+mul oT1.z, r0.x, c14.y
+dp4 r0.x, r1, c7
+min oPos.z, r0.y, r0.x
+mul r2.x, r0.z, r0.z
+mov oPos.w, r0.x
+pow r0, c16.x, -r2.x
+dp4 r0.z, v1, c11
+dp4 r0.x, v1, c8
+dp4 r0.y, v1, c9
+dp4 oPos.y, r1, c5
+dp4 oPos.x, r1, c4
+mov oT0.w, r0
+mov oT0.xyz, r0
+mad oT1.xy, v1, c15.z, c15

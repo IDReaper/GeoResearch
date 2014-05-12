@@ -1,0 +1,45 @@
+!!ARBfp1.0
+# cgc version 3.0.0016, build date Feb 11 2011
+# command line args: -profile arbfp1 -quiet
+#vendor NVIDIA Corporation
+#version 3.0.0.16
+#profile arbfp1
+#program pmain
+#semantic pmain.groundTexture
+#semantic pmain.groundRayleighOverlayMap
+#semantic pmain.atmosphereCustomColor
+#semantic pmain.groundFogColor
+#semantic pmain.groundSunOffPixelParams
+#semantic pmain.groundOverlayExtent
+#var float4 texCoordAndFogFactor : $vin.TEXCOORD0 : TEX0 : 0 : 1
+#var float4 blendTexCoordAndRayleighT : $vin.TEXCOORD1 : TEX1 : 1 : 1
+#var sampler2D groundTexture :  : texunit 0 : 2 : 1
+#var sampler2D groundRayleighOverlayMap :  : texunit 1 : 3 : 1
+#var float4 atmosphereCustomColor :  : c[0] : 4 : 1
+#var float4 groundFogColor :  : c[1] : 5 : 1
+#var float4 groundSunOffPixelParams :  : c[2] : 6 : 1
+#var float4 groundOverlayExtent :  : c[3] : 7 : 1
+#var float4 pmain : $vout.COLOR : COL : -1 : 1
+PARAM c[4] = { program.local[0..3] };
+TEMP R0;
+TEMP R1;
+TXP R0, fragment.texcoord[0].xyzz, texture[0], 2D;
+MUL R1, R0, c[0];
+RCP R0.w, fragment.texcoord[0].z;
+MOV R0.y, fragment.texcoord[1].z;
+MOV R0.x, c[2];
+TEX R0.xyz, R0, texture[1], 2D;
+ADD R0.xyz, R1, R0;
+MUL R1.xy, fragment.texcoord[0], R0.w;
+ADD R0.xyz, R0, -c[1];
+SGE R0.w, R1.x, c[3].x;
+SGE R1.z, c[3].y, R1.x;
+MUL R1.z, R0.w, R1;
+SGE R0.w, R1.y, c[3].z;
+SGE R1.x, c[3].w, R1.y;
+MUL R0.w, R1.z, R0;
+MUL R0.w, R0, R1.x;
+MAD result.color.xyz, fragment.texcoord[0].w, R0, c[1];
+MUL result.color.w, R1, R0;
+END
+# 18 instructions, 2 R-regs

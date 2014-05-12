@@ -1,0 +1,24 @@
+!!ARBvp1.0
+# cgc version 2.1.0016, build date Nov 20 2008
+# command line args: -profile arbvp1 -quiet
+#vendor NVIDIA Corporation
+#version 2.1.0.16
+#profile arbvp1
+#program vmain
+#semantic vmain.model_view_proj
+#semantic vmain.vertex_args
+#var float4 position : $vin.POSITION : POSITION : 0 : 1
+#var float4 tex_coord : $vin.TEXCOORD0 : TEXCOORD0 : 1 : 1
+#var float4x4 model_view_proj :  : c[1], 4 : 2 : 1
+#var float4 vertex_args :  : c[5] : 3 : 1
+#var float4 vmain.position : $vout.POSITION : HPOS : -1 : 1
+#var float4 vmain.tex_coord : $vout.TEXCOORD0 : TEX0 : -1 : 1
+PARAM c[6] = { program.local[0..5] };
+MOV result.texcoord[0].xzw, vertex.texcoord[0];
+DP4 result.position.w, vertex.position, c[4];
+DP4 result.position.z, vertex.position, c[3];
+DP4 result.position.y, vertex.position, c[2];
+DP4 result.position.x, vertex.position, c[1];
+MUL result.texcoord[0].y, vertex.texcoord[0], c[5].x;
+END
+# 6 instructions, 0 R-regs

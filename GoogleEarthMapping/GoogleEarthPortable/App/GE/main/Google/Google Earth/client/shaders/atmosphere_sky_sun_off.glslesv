@@ -1,0 +1,59 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+attribute vec4 ig_Vertex;
+attribute vec3 ig_Normal;
+attribute vec4 ig_MultiTexCoord0;
+attribute vec4 ig_MultiTexCoord1;
+varying vec4 ig_TexCoord[4];
+
+// glslv output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslv
+// source file: atmosphere_sky_sun_off.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslv
+//program vmain
+//semantic vmain.modelViewProj
+//semantic vmain.skySunOffVertexParams
+//var float4x4 modelViewProj :  : ig_ModelViewProjectionMatrix[0], 4 : 1 : 1
+//var float4 skySunOffVertexParams :  : _skySunOffVertexParams : 2 : 1
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.rayleighT : $vout.TEXCOORD0 : TEX0 : -1 : 1
+
+struct VertexOutput {
+    vec4 _pos;
+    vec4 _rayleighT1;
+};
+
+uniform mat4 ig_ModelViewProjectionMatrix;
+uniform vec4 _skySunOffVertexParams;
+vec4 _r0003;
+
+ // main procedure, the original name was vmain
+void main()
+{
+
+    float _rayleighT;
+    VertexOutput _vertOutput;
+
+    _rayleighT = (ig_Vertex.y + _skySunOffVertexParams.x)*_skySunOffVertexParams.y;
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0003.x = dot(ig_ModelViewProjectionMatrix[0], ig_Vertex);
+    _r0003.y = dot(ig_ModelViewProjectionMatrix[1], ig_Vertex);
+    _r0003.z = dot(ig_ModelViewProjectionMatrix[2], ig_Vertex);
+    _r0003.w = dot(ig_ModelViewProjectionMatrix[3], ig_Vertex);
+*/
+_r0003 = ig_ModelViewProjectionMatrix * ig_Vertex;
+    _vertOutput._pos = _r0003;
+    _vertOutput._pos.z = min(_r0003.z, _r0003.w);
+    ig_TexCoord[0] = vec4(_rayleighT, _rayleighT, _rayleighT, _rayleighT);
+    gl_Position = _vertOutput._pos;
+    return;
+} // main end

@@ -1,0 +1,62 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+varying vec4 ig_TexCoord[4];
+// glslf output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslf
+// source file: atmosphere_ground_sun_off_overlay.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslf
+//program pmain
+//semantic pmain.atmosphereCustomColor
+//semantic pmain.groundFogColor
+//semantic pmain.groundSunOffPixelParams
+//semantic pmain.groundTexture
+//semantic pmain.groundRayleighMap
+//var float4 atmosphereCustomColor :  : _atmosphereCustomColor : 2 : 1
+//var float4 groundFogColor :  : _groundFogColor : 3 : 1
+//var float4 groundSunOffPixelParams :  : _groundSunOffPixelParams : 4 : 1
+//var sampler2D groundTexture :  : _groundTexture : 5 : 1
+//var sampler2D groundRayleighMap :  : _groundRayleighMap : 6 : 1
+//var float4 texCoordAndFogFactor : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 rayleighT : $vin.TEXCOORD1 : TEX1 : 1 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+
+struct GroundSunOffVertOutput {
+    vec4 _texCoordAndFogFactor2;
+    vec4 _rayleighT2;
+};
+
+uniform vec4 _atmosphereCustomColor;
+uniform vec4 _groundFogColor;
+uniform vec4 _groundSunOffPixelParams;
+uniform sampler2D _groundTexture;
+uniform sampler2D _groundRayleighMap;
+vec2 _c0008;
+
+ // main procedure, the original name was pmain
+void main()
+{
+
+    vec4 _diffuseColor;
+    vec2 _stOverZ;
+    vec4 _rayleigh;
+    vec3 _scatteredColor;
+    vec4 _color;
+
+    _diffuseColor = texture2DProj(_groundTexture, ig_TexCoord[0].xyz)*_atmosphereCustomColor;
+    _stOverZ = ig_TexCoord[0].xy/ig_TexCoord[0].z;
+    _diffuseColor.w = _diffuseColor.w*float((_stOverZ.x >= 0.00000000E+000 && _stOverZ.x <= 1.00000000E+000 && _stOverZ.y >= 0.00000000E+000 && _stOverZ.y <= 1.00000000E+000));
+    _c0008 = vec2(_groundSunOffPixelParams.x, ig_TexCoord[1].x);
+    _rayleigh = texture2D(_groundRayleighMap, _c0008);
+    _scatteredColor = _rayleigh.xyz + _diffuseColor.xyz;
+    _color.xyz = _groundFogColor.xyz + ig_TexCoord[0].w*(_scatteredColor.xyz - _groundFogColor.xyz);
+    _color.w = _diffuseColor.w;
+    gl_FragColor = _color;
+    return;
+} // main end

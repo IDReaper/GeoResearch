@@ -1,0 +1,64 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+varying vec4 ig_TexCoord[4];
+// glslf output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslf
+// source file: atmosphere_sky_sun_on.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslf
+//program pmain
+//semantic pmain.cameraToSunDirAndExposure
+//semantic pmain.brightestMieColorAndSunStrength
+//var float4 cameraToSunDirAndExposure :  : _cameraToSunDirAndExposure : 2 : 1
+//var float4 brightestMieColorAndSunStrength :  : _brightestMieColorAndSunStrength : 3 : 1
+//var float4 rayleighColorAndSkyOpacity : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 vertToCameraDir : $vin.TEXCOORD1 : TEX1 : 1 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+
+struct VertexOutput {
+    vec4 _rayleighColorAndSkyOpacity3;
+    vec4 _vertToCameraDir3;
+};
+
+uniform vec4 _cameraToSunDirAndExposure;
+uniform vec4 _brightestMieColorAndSunStrength;
+float _cosAngle0003;
+float _cosAngle20003;
+vec4 _color0003;
+float _luminanceAlphaComponent0003;
+float _TMP10;
+float _a0011;
+float _TMP16;
+float _x0019;
+vec3 _x0021;
+vec3 _TMP22;
+float _TMP30;
+
+ // main procedure, the original name was pmain
+void main()
+{
+
+
+    _a0011 = dot(ig_TexCoord[1].xyz, ig_TexCoord[1].xyz);
+    _TMP10 = 1.00000000E+000/inversesqrt(_a0011);
+    _cosAngle0003 = dot(_cameraToSunDirAndExposure.xyz, ig_TexCoord[1].xyz)/_TMP10;
+    _cosAngle0003 = _cosAngle0003*_brightestMieColorAndSunStrength.w;
+    _cosAngle20003 = _cosAngle0003*_cosAngle0003;
+    _x0019 = 1.98010004E+000 - -1.98000002E+000*_cosAngle0003;
+    _TMP16 = (1.00164237E-002*(1.00000000E+000 + _cosAngle20003))/pow(_x0019, 1.50000000E+000);
+    _color0003.xyz = (7.50000000E-001 + 7.50000000E-001*_cosAngle20003)*ig_TexCoord[0].xyz + _TMP16*_brightestMieColorAndSunStrength.xyz;
+    _x0021 = _color0003.xyz*-_cameraToSunDirAndExposure.w;
+    _TMP22 = vec3(pow(2.71828198E+000, _x0021.x), pow(2.71828198E+000, _x0021.y), pow(2.71828198E+000, _x0021.z));
+    _color0003.xyz = vec3( 1.00000000E+000, 1.00000000E+000, 1.00000000E+000) - _TMP22;
+    _TMP30 = dot(vec3( 3.00000012E-001, 5.89999974E-001, 1.09999999E-001), _color0003.xyz);
+    _luminanceAlphaComponent0003 = 2.00000000E+000*_TMP30;
+    _color0003.w = _luminanceAlphaComponent0003 + ig_TexCoord[0].w;
+    gl_FragColor = _color0003;
+    return;
+} // main end

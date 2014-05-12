@@ -1,0 +1,102 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+attribute vec4 ig_Vertex;
+attribute vec4 ig_Color;
+attribute vec3 ig_Normal;
+attribute vec4 ig_MultiTexCoord0;
+attribute vec4 ig_MultiTexCoord1;
+varying vec4 ig_TexCoord[4];
+
+// glslv output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslv
+// source file: watersurface.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslv
+//program vmain
+//semantic vmain.model_view_proj
+//semantic vmain.clip_to_water_mat
+//semantic vmain.fog_density
+//semantic vmain.eye_pos_and_anim_time
+//var float4x4 model_view_proj :  : ig_ModelViewProjectionMatrix[0], 4 : 3 : 1
+//var float4x4 clip_to_water_mat :  : _clip_to_water_mat[0], 4 : 4 : 1
+//var float4 fog_density :  : _fog_density : 5 : 1
+//var float4 eye_pos_and_anim_time :  : _eye_pos_and_anim_time : 6 : 1
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float4 color : $vin.COLOR0 : ATTR3 : 1 : 1
+//var float2 tex_coord : $vin.TEXCOORD0 : ATTR8 : 2 : 1
+//var float4 vmain.position : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.normal_and_alpha : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.water_to_eye_dir_and_fog_factor : $vout.TEXCOORD1 : TEX1 : -1 : 1
+//var float4 vmain.bump_coords_01 : $vout.TEXCOORD2 : TEX2 : -1 : 1
+//var float4 vmain.bump_coords_23 : $vout.TEXCOORD3 : TEX3 : -1 : 1
+
+struct VertexOutput {
+    vec4 _position2;
+    vec4 _normal_and_alpha;
+    vec4 _water_to_eye_dir_and_fog_factor;
+    vec4 _bump_coords_01;
+    vec4 _bump_coords_23;
+};
+
+uniform mat4 ig_ModelViewProjectionMatrix;
+uniform mat4 _clip_to_water_mat;
+uniform vec4 _fog_density;
+uniform vec4 _eye_pos_and_anim_time;
+uniform vec4 _wave_scales;
+vec4 _r0007;
+vec4 _r0017;
+vec3 _TMP26;
+float _x0031;
+vec3 _TMP32;
+vec3 _v0033;
+float _x0037;
+float _TMP38;
+float _x0039;
+
+ // main procedure, the original name was vmain
+void main()
+{
+
+    float _fog_temp;
+    VertexOutput _vert_output;
+
+/** mat-vec multiplication using dot doesn't work with column-major mat
+    _r0007.x = dot(ig_ModelViewProjectionMatrix[0], ig_Vertex);
+    _r0007.y = dot(ig_ModelViewProjectionMatrix[1], ig_Vertex);
+    _r0007.z = dot(ig_ModelViewProjectionMatrix[2], ig_Vertex);
+    _r0007.w = dot(ig_ModelViewProjectionMatrix[3], ig_Vertex);
+*/
+_r0007 = ig_ModelViewProjectionMatrix * ig_Vertex;
+/** mat-vec multiplication using dot doesn't work with column-major mat
+    _r0017.x = dot(_clip_to_water_mat[0], _r0007);
+    _r0017.y = dot(_clip_to_water_mat[1], _r0007);
+    _r0017.z = dot(_clip_to_water_mat[2], _r0007);
+*/
+_r0017 = _clip_to_water_mat * _r0007;
+
+    _x0031 = dot(_r0017.xyz, _r0017.xyz);
+    _TMP26 = inversesqrt(_x0031)*_r0017.xyz;
+    _v0033 = _eye_pos_and_anim_time.xyz - _TMP26;
+    _x0037 = dot(_v0033, _v0033);
+    _TMP32 = inversesqrt(_x0037)*_v0033;
+    _fog_temp = _fog_density.x*_r0007.z;
+    _x0039 = -(_fog_temp*_fog_temp);
+    _TMP38 = pow(2.71828198E+000, _x0039);
+    _vert_output._normal_and_alpha = vec4(_TMP26.x, _TMP26.y, _TMP26.z, ig_Color.w);
+    _vert_output._water_to_eye_dir_and_fog_factor = vec4(_TMP32.x, _TMP32.y, _TMP32.z, _TMP38);
+    _vert_output._bump_coords_01.xy = ig_MultiTexCoord0.xy*_wave_scales[0] + vec2( 0.00000000E+000, -2.00000000E+000)*_eye_pos_and_anim_time.w;
+    _vert_output._bump_coords_01.zw = ig_MultiTexCoord0.xy*_wave_scales[1] + vec2( 4.00000000E+000, 0.00000000E+000)*_eye_pos_and_anim_time.w;
+    _vert_output._bump_coords_23.xy = ig_MultiTexCoord0.xy*_wave_scales[2] + vec2( -4.00000000E+000, 0.00000000E+000)*_eye_pos_and_anim_time.w;
+    _vert_output._bump_coords_23.zw = -ig_MultiTexCoord0.xy*_wave_scales[3] + vec2( 0.00000000E+000, 1.00000000E+000)*_eye_pos_and_anim_time.w;
+    ig_TexCoord[2] = _vert_output._bump_coords_01;
+    ig_TexCoord[0] = _vert_output._normal_and_alpha;
+    ig_TexCoord[3] = _vert_output._bump_coords_23;
+    ig_TexCoord[1] = _vert_output._water_to_eye_dir_and_fog_factor;
+    gl_Position = _r0007;
+    return;
+} // main end

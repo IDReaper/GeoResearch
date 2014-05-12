@@ -1,0 +1,59 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+varying vec4 ig_TexCoord[4];
+// glslf output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslf
+// source file: atmosphere_ground_sun_on_overlay.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslf
+//program pmain
+//semantic pmain.groundTexture
+//semantic pmain.atmosphereCustomState
+//semantic pmain.atmosphereCustomColor
+//semantic pmain.fogColor
+//var sampler2D groundTexture :  : _groundTexture : 3 : 1
+//var float4 atmosphereCustomState :  : _atmosphereCustomState : 4 : 1
+//var float4 atmosphereCustomColor :  : _atmosphereCustomColor : 5 : 1
+//var float4 fogColor :  : _fogColor : 6 : 1
+//var float3 rayleigh : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float3 adjustedMie : $vin.TEXCOORD1 : TEX1 : 1 : 1
+//var float4 texCoordAndFogFactor : $vin.TEXCOORD2 : TEX2 : 2 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+
+struct VertexOutput {
+    vec3 _rayleigh3;
+    vec3 _adjustedMie3;
+    vec4 _texCoordAndFogFactor3;
+};
+
+uniform sampler2D _groundTexture;
+uniform vec4 _atmosphereCustomState;
+uniform vec4 _atmosphereCustomColor;
+uniform vec4 _fogColor;
+vec4 _texColor0005;
+vec4 _diffuseColor0005;
+vec2 _stOverZ0005;
+vec3 _scatteredColor0005;
+vec4 _color0005;
+
+ // main procedure, the original name was pmain
+void main()
+{
+
+
+    _texColor0005 = texture2DProj(_groundTexture, ig_TexCoord[2].xyz);
+    _diffuseColor0005 = _atmosphereCustomState.y == 0.00000000E+000 ? _atmosphereCustomColor : _texColor0005*_atmosphereCustomColor;
+    _stOverZ0005 = ig_TexCoord[2].xy/ig_TexCoord[2].z;
+    _diffuseColor0005.w = _diffuseColor0005.w*float((_stOverZ0005.x >= 0.00000000E+000 && _stOverZ0005.x <= 1.00000000E+000 && _stOverZ0005.y >= 0.00000000E+000 && _stOverZ0005.y <= 1.00000000E+000));
+    _scatteredColor0005 = ig_TexCoord[0].xyz + _diffuseColor0005.xyz*ig_TexCoord[1].xyz;
+    _color0005.xyz = _fogColor.xyz + ig_TexCoord[2].w*(_scatteredColor0005 - _fogColor.xyz);
+    _color0005.w = _diffuseColor0005.w;
+    gl_FragColor = _color0005;
+    return;
+} // main end

@@ -1,0 +1,45 @@
+!!ARBvp1.0
+# cgc version 3.0.0016, build date Feb 11 2011
+# command line args: -profile arbvp1 -quiet
+#vendor NVIDIA Corporation
+#version 3.0.0.16
+#profile arbvp1
+#program vmain
+#semantic vmain.modelViewProj
+#semantic vmain.textureMatrix
+#semantic vmain.blendMorphVertexParams
+#semantic vmain.cameraToSunDirAndExposure
+#semantic vmain.lightDirectionInModel
+#var float4 position : $vin.POSITION : POSITION : 0 : 1
+#var float3 normal : $vin.NORMAL : NORMAL : 1 : 1
+#var float4 groundTexCoord : $vin.TEXCOORD0 : TEXCOORD0 : 2 : 1
+#var float4 morphVec : $vin.TEXCOORD1 : TEXCOORD1 : 3 : 1
+#var float4x4 modelViewProj :  : c[1], 4 : 4 : 1
+#var float4x4 textureMatrix :  : c[5], 4 : 5 : 1
+#var float4 blendMorphVertexParams :  : c[9] : 6 : 1
+#var float4 cameraToSunDirAndExposure :  : c[10] : 7 : 1
+#var float3 lightDirectionInModel :  : c[11] : 8 : 1
+#var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+#var float4 vmain.transformedCoords : $vout.TEXCOORD0 : TEX0 : -1 : 1
+#var float4 vmain.diffuse_factor : $vout.TEXCOORD1 : TEX1 : -1 : 1
+#const c[0] = 0 1
+PARAM c[12] = { { 0, 1 },
+		program.local[1..11] };
+TEMP R0;
+MUL R0.xyz, vertex.texcoord[1], c[9].w;
+ADD R0.xyz, R0, vertex.position;
+MOV R0.w, vertex.position;
+DP4 result.position.w, R0, c[4];
+DP4 result.position.z, R0, c[3];
+DP4 result.position.y, R0, c[2];
+DP4 result.position.x, R0, c[1];
+DP3 R0.x, vertex.normal, c[11];
+MAX R0.x, R0, c[0];
+ADD R0.x, R0, c[10].w;
+MOV result.texcoord[1].yzw, c[0].x;
+MAD result.texcoord[0].zw, vertex.texcoord[0].xyxy, c[9].z, c[9].xyxy;
+DP4 result.texcoord[0].y, vertex.texcoord[0], c[6];
+DP4 result.texcoord[0].x, vertex.texcoord[0], c[5];
+MIN result.texcoord[1].x, R0, c[0].y;
+END
+# 15 instructions, 1 R-regs

@@ -1,0 +1,63 @@
+!!ARBfp1.0
+# cgc version 2.1.0016, build date Nov 20 2008
+# command line args: -profile arbfp1 -quiet
+#vendor NVIDIA Corporation
+#version 2.1.0.16
+#profile arbfp1
+#program pmain
+#semantic pmain.pixel_args
+#semantic pmain.time_scrolls
+#semantic pmain.texture0
+#semantic pmain.texture1
+#semantic pmain.texture2
+#semantic pmain.texture3
+#var float4 tex_coord : $vin.TEXCOORD0 : TEX0 : 0 : 1
+#var float4 pixel_args :  : c[0] : 1 : 1
+#var float4 time_scrolls :  : c[1] : 2 : 1
+#var sampler2D texture0 :  : texunit 0 : 3 : 1
+#var sampler2D texture1 :  : texunit 1 : 4 : 1
+#var sampler2D texture2 :  : texunit 2 : 5 : 1
+#var sampler2D texture3 :  : texunit 3 : 6 : 1
+#var float4 pmain : $vout.COLOR : COL : -1 : 1
+#const c[2] = 8 2 4
+PARAM c[3] = { program.local[0..1],
+		{ 8, 2, 4 } };
+TEMP R0;
+TEMP R1;
+TEMP R2;
+TEMP R3;
+RCP R0.x, fragment.texcoord[0].w;
+MUL R0.xy, fragment.texcoord[0], R0.x;
+MUL R2.xy, R0, c[2].y;
+MOV R0.z, R0.x;
+ADD R0.w, R0.y, c[1].x;
+TEX R1.xyz, R0.zwzw, texture[0], 2D;
+MOV R0.z, R2.x;
+ADD R0.w, R2.y, c[1].y;
+TEX R2.xyz, R0.zwzw, texture[1], 2D;
+MUL R0.zw, R0.xyxy, c[2].z;
+MUL R0.xy, R0, c[2].x;
+ADD R0.w, R0, c[1].z;
+TEX R3.xyz, R0.zwzw, texture[2], 2D;
+ADD R1.w, R1.x, R2.x;
+ADD R0.y, R0, c[1].w;
+TEX R0.xyz, R0, texture[3], 2D;
+ADD R0.w, R1, R3.x;
+ADD R0.w, R0.x, R0;
+RCP R0.w, R0.w;
+MUL R1.w, R0, R2.x;
+MUL R2.xyz, R2, R1.w;
+MUL R1.w, R0, R1.x;
+MAD R1.xyz, R1, R1.w, R2;
+MUL R1.w, R0, R3.x;
+MAD R1.xyz, R3, R1.w, R1;
+MUL R0.w, R0.x, R0;
+MAD R0.xyz, R0, R0.w, R1;
+RSQ R1.w, fragment.texcoord[0].z;
+RCP R1.x, R1.w;
+MUL R0.w, R0.x, c[0].z;
+MUL R0.w, R0, R1.x;
+MUL R0.w, R0, c[0].y;
+MOV result.color, R0;
+END
+# 33 instructions, 4 R-regs

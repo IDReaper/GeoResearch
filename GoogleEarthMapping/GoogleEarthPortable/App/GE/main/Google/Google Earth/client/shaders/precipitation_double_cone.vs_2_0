@@ -1,0 +1,23 @@
+vs_2_0
+// cgc version 2.1.0016, build date Nov 20 2008
+// command line args: -profile vs_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 2.1.0.16
+//profile vs_2_0
+//program vmain
+//semantic vmain.model_view_proj
+//semantic vmain.vertex_args
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float4 tex_coord : $vin.TEXCOORD0 : ATTR1 : 1 : 1
+//var float4x4 model_view_proj :  : c[0], 4 : 2 : 1
+//var float4 vertex_args :  : c[4] : 3 : 1
+//var float4 vmain.position : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.tex_coord : $vout.TEXCOORD0 : TEX0 : -1 : 1
+dcl_position v0
+dcl_texcoord0 v1
+mov oT0.xzw, v1
+dp4 oPos.w, v0, c3
+dp4 oPos.z, v0, c2
+dp4 oPos.y, v0, c1
+dp4 oPos.x, v0, c0
+mul oT0.y, v1, c4.x

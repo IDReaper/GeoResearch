@@ -1,0 +1,186 @@
+vs_2_0
+// cgc version 2.2.0006, build date Mar 31 2009
+// command line args: -profile vs_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 2.2.0.6
+//profile vs_2_0
+//program vmain
+//semantic vmain.modelView
+//semantic vmain.modelViewProj
+//semantic vmain.worldOriginInView
+//semantic vmain.cameraToSunDirAndExposure
+//semantic vmain.cameraLightInfo
+//semantic vmain.startupConsts
+//var float4 position : $vin.POSITION0 : ATTR0 : 0 : 1
+//var float4x4 modelView :  : c[0], 4 : 1 : 1
+//var float4x4 modelViewProj :  : c[4], 4 : 2 : 1
+//var float3 worldOriginInView :  : c[8] : 3 : 1
+//var float4 cameraToSunDirAndExposure :  : c[9] : 4 : 1
+//var float4 cameraLightInfo :  : c[10] : 5 : 1
+//var float4 startupConsts :  : c[11] : 6 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.rayleighColorAndSkyOpacity : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.vertToCameraDir : $vout.TEXCOORD1 : TEX1 : -1 : 1
+//const c[12] = 0 1.0266541 2 -1.0540187
+//const c[13] = 4 0.5 5.25 -6.8000002
+//const c[14] = 3.8299999 0.45899999 -0.00287 2.718282
+//const c[15] = 250.11763 0.97403789 1 0.0012726336
+//const c[16] = 0.15000001 0.1885598 0.31017837 0.6296947
+//const c[17] = 37.517647 0.35012779 0.59208024 1.2277377
+def c12, 0.00000000, 1.02665412, 2.00000000, -1.05401874
+def c13, 4.00000000, 0.50000000, 5.25000000, -6.80000019
+def c14, 3.82999992, 0.45899999, -0.00287000, 2.71828198
+def c15, 250.11763000, 0.97403789, 1.00000000, 0.00127263
+def c16, 0.15000001, 0.18855980, 0.31017837, 0.62969470
+def c17, 37.51764679, 0.35012779, 0.59208024, 1.22773767
+dcl_position0 v0
+mov r0.y, c10.w
+add r0.y, c12.w, r0
+dp4 r1.z, v0, c2
+dp4 r1.x, v0, c0
+dp4 r1.y, v0, c1
+dp3 r0.x, r1, r1
+rsq r0.x, r0.x
+mul r2.xyz, r0.x, r1
+dp3 r1.w, r2, -c8
+mul r0.w, r1, c12.z
+mul r0.y, r0, c13.x
+mad r0.z, r0.w, r0.w, -r0.y
+max r0.z, r0, c12.x
+mov r0.y, c12
+rsq r2.w, r0.z
+slt r0.y, c10.x, r0
+sge r0.z, c12.x, r0.y
+sge r0.y, r0, c12.x
+mul r0.y, r0, r0.z
+rcp r0.z, r2.w
+max r0.y, -r0, r0
+slt r6.w, c12.x, r0.y
+add r0.z, -r0.w, -r0
+add r7.x, -r6.w, c15.z
+mul r3.xyz, r7.x, -c8
+mul r0.y, r0.z, c13
+rcp r0.x, r0.x
+mul r0.z, r0.x, r7.x
+add r0.x, r0, -r0.y
+mad r0.x, r6.w, r0, r0.z
+mul r2.w, r0.x, c13.y
+mad r0.xyz, r2, r0.y, -c8
+mul r4.xyz, r2, r2.w
+mad r5.xyz, r6.w, r0, r3
+mad r6.xyz, r4, c13.y, r5
+dp3 r0.x, r6, r6
+rsq r3.x, r0.x
+dp3 r0.z, r2, r6
+dp3 r0.x, r6, c9
+mad r0.x, -r0, r3, c15.z
+mad r0.y, r0.x, c13.z, c13.w
+mad r0.y, r0.x, r0, c14.x
+mad r0.y, r0.x, r0, c14
+mad r3.y, r3.x, -r0.z, c15.z
+mad r3.z, r0.x, r0.y, c14
+pow r0, c14.w, r3.z
+mad r0.y, r3, c13.z, c13.w
+mad r0.y, r3, r0, c14.x
+mov r4.w, r0.x
+mad r0.x, r3.y, r0.y, c14.y
+rcp r0.y, r3.x
+mad r0.x, r3.y, r0, c14.z
+pow r3, c14.w, r0.x
+add r0.y, -r0, c15.z
+mul r3.y, r0, c15.x
+pow r0, c14.w, r3.y
+mov r0.y, r3.x
+add r3.xyz, r6, r4
+mov r3.w, r0.x
+dp3 r0.x, r2, r5
+add r0.y, r4.w, -r0
+mul r6.z, r0.y, r3.w
+dp3 r0.y, r3, r3
+dp3 r2.x, r2, r3
+rsq r6.y, r0.y
+mad r0.x, -r0, c15.y, c15.z
+dp3 r0.z, r3, c9
+mad r7.y, -r0.z, r6, c15.z
+mad r0.y, r0.x, c13.z, c13.w
+mad r0.y, r0.x, r0, c14.x
+mad r0.y, r0.x, r0, c14
+mad r0.x, r0, r0.y, c14.z
+pow r5, c14.w, r0.x
+mad r0.z, r7.y, c13, c13.w
+mad r7.z, r7.y, r0, c14.x
+rcp r6.x, c10.x
+mad r0.x, -r1.w, r6, c15.z
+mad r0.y, r0.x, c13.z, c13.w
+mad r0.y, r0.x, r0, c14.x
+mov r0.z, c10.x
+add r0.z, c15, -r0
+mad r0.y, r0.x, r0, c14
+mul r4.x, r0.z, c15
+mad r5.y, r0.x, r0, c14.z
+pow r0, c14.w, r4.x
+pow r4, c14.w, r5.y
+mov r0.y, r0.x
+mov r0.x, r4
+mul r0.y, r0.x, r0
+mov r0.x, r5
+mul r0.y, r7.x, r0
+mul r0.x, r0, c15.w
+mul r0.y, r0, c16.x
+mul r0.x, r6.w, r0
+mad r5.x, r0, c16, r0.y
+mad r0.x, r7.y, r7.z, c14.y
+mad r4.x, r7.y, r0, c14.z
+pow r0, c14.w, r4.x
+mad r0.y, r6, -r2.x, c15.z
+mad r0.z, r0.y, c13, c13.w
+mov r2.x, r0
+mad r0.x, r0.y, r0.z, c14
+rcp r0.z, r6.y
+mad r0.x, r0.y, r0, c14.y
+add r0.z, -r0, c15
+mad r0.x, r0.y, r0, c14.z
+pow r4, c14.w, r0.x
+mul r2.y, r0.z, c15.x
+pow r0, c14.w, r2.y
+mov r0.y, r4.x
+mov r6.y, r0.x
+add r0.x, r2, -r0.y
+mad r5.y, r6.z, c16.x, r5.x
+mul r2.xyz, -r5.y, c16.yzww
+pow r4, c14.w, r2.x
+mov r2.x, r4
+pow r4, c14.w, r2.z
+mul r0.x, r0, r6.y
+mad r0.x, r0, c16, r5
+mul r3.xyz, -r0.x, c16.yzww
+pow r0, c14.w, r3.y
+pow r5, c14.w, r3.x
+mov r3.y, r0
+pow r0, c14.w, r3.z
+mul r2.w, r2, c17.x
+mul r0.x, r2.w, r6.y
+mov r3.z, r0
+mov r3.x, r5
+mul r3.xyz, r3, r0.x
+pow r0, c14.w, r2.y
+mov r2.y, r0
+mul r0.x, -r1.w, r6
+slt r0.x, c10.z, r0
+max r0.w, -r0.x, r0.x
+slt r1.w, c12.x, r0
+mul r0.y, r3.w, r2.w
+mov r2.z, r4
+mad r2.xyz, r2, r0.y, r3
+mul r0.xyz, r2, c17.yzww
+mov r0.w, c11
+add r1.w, -r1, c15.z
+mul oT0, r1.w, r0
+dp4 r0.y, v0, c7
+dp4 r0.x, v0, c6
+mov oT1.xyz, -r1
+min oPos.z, r0.x, r0.y
+mov oPos.w, r0.y
+dp4 oPos.y, v0, c5
+dp4 oPos.x, v0, c4
+mov oT1.w, c15.z

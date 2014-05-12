@@ -1,0 +1,39 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+varying vec4 ig_TexCoord[4];
+// glslf output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslf
+// source file: atmosphere_sky_sun_off.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslf
+//program pmain
+//semantic pmain.skySunOffPixelParams
+//semantic pmain.skyMap
+//var float4 skySunOffPixelParams :  : _skySunOffPixelParams : 1 : 1
+//var sampler2D skyMap :  : _skyMap : 2 : 1
+//var float4 rayleighT : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+
+struct VertexOutput {
+    vec4 _rayleighT2;
+};
+
+vec4 _ret_0;
+uniform vec4 _skySunOffPixelParams;
+uniform sampler2D _skyMap;
+vec2 _c0003;
+
+ // main procedure, the original name was pmain
+void main()
+{
+    _c0003 = vec2(_skySunOffPixelParams.x, ig_TexCoord[0].x);
+    _ret_0 = texture2D(_skyMap, _c0003);
+    gl_FragColor = _ret_0;
+    return;
+} // main end

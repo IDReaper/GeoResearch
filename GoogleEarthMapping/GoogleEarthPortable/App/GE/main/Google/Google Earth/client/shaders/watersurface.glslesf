@@ -1,0 +1,105 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+varying vec4 ig_TexCoord[4];
+// glslf output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslf
+// source file: watersurface.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslf
+//program pmain
+//semantic pmain.fog_color_and_max_alpha
+//semantic pmain.bump_map
+//semantic pmain.sky_reflection_map
+//var float4 fog_color_and_max_alpha :  : _fog_color_and_max_alpha : 4 : 1
+//var sampler2D bump_map :  : _bump_map : 5 : 1
+//var sampler2D sky_reflection_map :  : _sky_reflection_map : 6 : 1
+//var float4 normal_and_alpha : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 water_to_eye_dir_and_fog_factor : $vin.TEXCOORD1 : TEX1 : 1 : 1
+//var float4 bump_coords_01 : $vin.TEXCOORD2 : TEX2 : 2 : 1
+//var float4 bump_coords_23 : $vin.TEXCOORD3 : TEX3 : 3 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+
+struct VertexOutput {
+    vec4 _normal_and_alpha2;
+    vec4 _water_to_eye_dir_and_fog_factor2;
+    vec4 _bump_coords_012;
+    vec4 _bump_coords_232;
+};
+
+vec4 _ret_0;
+uniform vec4 _fog_color_and_max_alpha;
+uniform sampler2D _bump_map;
+uniform sampler2D _sky_reflection_map;
+uniform vec4 _bump_weights;
+uniform vec4 _fragment_constants;
+vec3 _TMP6;
+float _x0011;
+vec3 _TMP12;
+float _x0017;
+float _t0027;
+float _subtraction0031;
+vec3 _TMP34;
+vec3 _i0035;
+vec2 _c0041;
+
+/**
+ * The color values come in as a byte array therefore
+ * color range is 0-255 instead of 0-1
+ */
+const float _1_over_255 = 1.0/255.0;
+
+ // main procedure, the original name was pmain
+void main()
+{
+
+    vec3 _normal2;
+    vec3 _bump_value_0;
+    vec3 _bump_value_1;
+    vec3 _bump_value_2;
+    vec3 _bump_value_3;
+    vec3 _sum_val;
+    float _cos_angle_reflected_and_sun;
+    float _max_vertex_alpha;
+    vec4 _reflected_color;
+    vec4 _refracted_color;
+    vec4 _water_color;
+    vec4 _fog_color;
+    vec3 _TMP5;
+
+    _x0011 = dot(ig_TexCoord[1].xyz, ig_TexCoord[1].xyz);
+    _TMP6 = inversesqrt(_x0011)*ig_TexCoord[1].xyz;
+    _x0017 = dot(ig_TexCoord[0].xyz, ig_TexCoord[0].xyz);
+    _TMP12 = inversesqrt(_x0017)*ig_TexCoord[0].xyz;
+    _bump_value_0 = texture2D(_bump_map, ig_TexCoord[2].xy).xyz*_bump_weights[0];
+    _bump_value_1 = texture2D(_bump_map, ig_TexCoord[2].zw).xyz*_bump_weights[1];
+    _bump_value_2 = texture2D(_bump_map, ig_TexCoord[3].xy).xyz*_bump_weights[2];
+    _bump_value_3 = texture2D(_bump_map, ig_TexCoord[3].zw).xyz*_bump_weights[3];
+    _sum_val = _fragment_constants[0]*(_bump_value_0 + _bump_value_1 + _bump_value_2 + _bump_value_3) - 1.00000000E+000;
+    _t0027 = _TMP12.z*6.00000024E-001;
+    _normal2 = _TMP12 + _t0027*(_sum_val - _TMP12);
+    _subtraction0031 = 1.00000000E+000 - dot(_TMP6, _normal2);
+    _i0035 = -_TMP6;
+    _TMP34 = _i0035 - (2.00000000E+000*_normal2)*dot(_normal2, _i0035);
+    _cos_angle_reflected_and_sun = dot(_TMP34, vec3( 0.00000000E+000, 0.00000000E+000, 1.00000000E+000));
+
+/**
+ * The color values come in as a byte array therefore
+ * color range is 0-255 instead of 0-1
+ */
+    _max_vertex_alpha = ig_TexCoord[0].w*_fog_color_and_max_alpha.w * _1_over_255;
+    _c0041 = vec2(_cos_angle_reflected_and_sun, 5.00000000E-001);
+    _TMP5 = texture2D(_sky_reflection_map, _c0041).xyz;
+    _reflected_color = vec4(_TMP5.x, _TMP5.y, _TMP5.z, _max_vertex_alpha);
+    _refracted_color = vec4(1.00000001E-001, 1.70000002E-001, 2.70000011E-001, 3.00000012E-001*_max_vertex_alpha);
+    _water_color = _refracted_color + _subtraction0031*(_reflected_color - _refracted_color);
+    _fog_color = vec4(_fog_color_and_max_alpha.x, _fog_color_and_max_alpha.y, _fog_color_and_max_alpha.z, 1.00000000E+000);
+    _ret_0 = _fog_color + ig_TexCoord[1].w*(_water_color - _fog_color);
+    gl_FragColor = _ret_0;
+    return;
+} // main end

@@ -1,0 +1,42 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+varying vec4 ig_TexCoord[4];
+varying vec4 ig_VaryingColor;
+// glslf output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslf
+// source file: ground_overlay_no_atmosphere.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslf
+//program pmain
+//semantic pmain.groundTexture
+//var sampler2D groundTexture :  : _groundTexture : 2 : 1
+//var float4 texCoord : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 vertexColor : $vin.COLOR : COL0 : 1 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+
+struct VertexOutput {
+    vec4 _texCoord2;
+    vec4 _color1;
+};
+
+uniform sampler2D _groundTexture;
+
+ // main procedure, the original name was pmain
+void main()
+{
+
+    vec4 _color;
+    vec2 _stOverW;
+
+    _color = texture2DProj(_groundTexture, ig_TexCoord[0].xyw)*ig_VaryingColor;
+    _stOverW = ig_TexCoord[0].xy/ig_TexCoord[0].w;
+    _color.w = _color.w*float((_stOverW.x >= 0.00000000E+000 && _stOverW.x <= 1.00000000E+000 && _stOverW.y >= 0.00000000E+000 && _stOverW.y <= 1.00000000E+000));
+    gl_FragColor = _color;
+    return;
+} // main end

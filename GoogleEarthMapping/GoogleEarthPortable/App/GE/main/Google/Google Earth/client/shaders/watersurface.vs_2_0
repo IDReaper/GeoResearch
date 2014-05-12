@@ -1,0 +1,66 @@
+vs_2_0
+// cgc version 3.0.0016, build date Feb 11 2011
+// command line args: -profile vs_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 3.0.0.16
+//profile vs_2_0
+//program vmain
+//semantic vmain.model_view_proj
+//semantic vmain.clip_to_water_mat
+//semantic vmain.fog_density
+//semantic vmain.eye_pos_and_anim_time
+//semantic vmain.wave_scales
+//var float4 position : $vin.POSITION0 : ATTR0 : 0 : 1
+//var float4 color : $vin.COLOR0 : ATTR1 : 1 : 1
+//var float2 tex_coord : $vin.TEXCOORD0 : ATTR2 : 2 : 1
+//var float4x4 model_view_proj :  : c[0], 4 : 3 : 1
+//var float4x4 clip_to_water_mat :  : c[4], 4 : 4 : 1
+//var float4 fog_density :  : c[8] : 5 : 1
+//var float4 eye_pos_and_anim_time :  : c[9] : 6 : 1
+//var float4 wave_scales :  : c[10] : 7 : 1
+//var float4 vmain.position : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.normal_and_alpha : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.water_to_eye_dir_and_fog_factor : $vout.TEXCOORD1 : TEX1 : -1 : 1
+//var float4 vmain.bump_coords_01 : $vout.TEXCOORD2 : TEX2 : -1 : 1
+//var float4 vmain.bump_coords_23 : $vout.TEXCOORD3 : TEX3 : -1 : 1
+//const c[11] = 2.718282 4 0 -2
+//const c[12] = 0 1 -4
+def c11, 2.71828198, 4.00000000, 0.00000000, -2.00000000
+def c12, 0.00000000, 1.00000000, -4.00000000, 0
+dcl_position0 v0
+dcl_color0 v1
+dcl_texcoord0 v2
+dp4 r0.w, v0, c2
+mov r2.z, r0.w
+mul r0.w, r0, c8.x
+dp4 r2.w, v0, c3
+dp4 r2.x, v0, c0
+dp4 r2.y, v0, c1
+dp4 r0.z, r2, c6
+dp4 r0.x, r2, c4
+dp4 r0.y, r2, c5
+dp3 r1.x, r0, r0
+rsq r1.x, r1.x
+mul r1.xyz, r1.x, r0
+add r0.xyz, -r1, c9
+dp3 r1.w, r0, r0
+rsq r1.w, r1.w
+mul oT1.xyz, r1.w, r0
+mul r3.x, r0.w, r0.w
+pow r0, c11.x, -r3.x
+mov r1.w, v1
+mov r0.x, c9.w
+mov oT1.w, r0
+mul r0.zw, c11.xyyz, r0.x
+mov r0.y, c9.w
+mul r0.xy, c11.zwzw, r0.y
+mad oT2.xy, v2, c10.x, r0
+mov r0.x, c9.w
+mad oT2.zw, v2.xyxy, c10.y, r0
+mul r0.zw, c12.xyxy, r0.x
+mov r0.y, c9.w
+mul r0.xy, c12.zxzw, r0.y
+mov oT0, r1
+mov oPos, r2
+mad oT3.zw, -v2.xyxy, c10.w, r0
+mad oT3.xy, v2, c10.z, r0

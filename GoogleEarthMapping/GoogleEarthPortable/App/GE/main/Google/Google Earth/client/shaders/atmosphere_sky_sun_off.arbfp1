@@ -1,0 +1,20 @@
+!!ARBfp1.0
+# cgc version 3.0.0016, build date Feb 11 2011
+# command line args: -profile arbfp1 -quiet
+#vendor NVIDIA Corporation
+#version 3.0.0.16
+#profile arbfp1
+#program pmain
+#semantic pmain.skySunOffPixelParams
+#semantic pmain.skyMap
+#var float4 rayleighT : $vin.TEXCOORD0 : TEX0 : 0 : 1
+#var float4 skySunOffPixelParams :  : c[0] : 1 : 1
+#var sampler2D skyMap :  : texunit 0 : 2 : 1
+#var float4 pmain : $vout.COLOR : COL : -1 : 1
+PARAM c[1] = { program.local[0] };
+TEMP R0;
+MOV R0.y, fragment.texcoord[0].x;
+MOV R0.x, c[0];
+TEX result.color, R0, texture[0], 2D;
+END
+# 3 instructions, 1 R-regs

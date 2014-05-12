@@ -1,0 +1,76 @@
+ps_2_0
+// cgc version 3.0.0016, build date Feb 11 2011
+// command line args: -profile ps_2_0 -quiet
+//vendor NVIDIA Corporation
+//version 3.0.0.16
+//profile ps_2_0
+//program pmain
+//semantic pmain.fog_color_and_max_alpha
+//semantic pmain.bump_map
+//semantic pmain.sky_reflection_map
+//semantic pmain.bump_weights
+//semantic pmain.fragment_constants
+//var float4 normal_and_alpha : $vin.TEXCOORD0 : TEX0 : 0 : 1
+//var float4 water_to_eye_dir_and_fog_factor : $vin.TEXCOORD1 : TEX1 : 1 : 1
+//var float4 bump_coords_01 : $vin.TEXCOORD2 : TEX2 : 2 : 1
+//var float4 bump_coords_23 : $vin.TEXCOORD3 : TEX3 : 3 : 1
+//var float4 fog_color_and_max_alpha :  : c[0] : 4 : 1
+//var sampler2D bump_map :  : texunit 0 : 5 : 1
+//var sampler2D sky_reflection_map :  : texunit 1 : 6 : 1
+//var float4 bump_weights :  : c[1] : 7 : 1
+//var float4 fragment_constants :  : c[2] : 8 : 1
+//var float4 pmain : $vout.COLOR : COL : -1 : 1
+//const c[3] = -1 0.60000002 2 0.5
+//const c[4] = 0.30000001 0.1 0.17 0.27000001
+//const c[5] = 1
+dcl_2d s0
+dcl_2d s1
+def c3, -1.00000000, 0.60000002, 2.00000000, 0.50000000
+def c4, 0.30000001, 0.10000000, 0.17000000, 0.27000001
+def c5, 1.00000000, 0, 0, 0
+dcl t1
+dcl t0
+dcl t2
+dcl t3
+texld r3, t2, s0
+mov r0.y, t3.w
+mov r0.x, t3.z
+mov r1.xy, r0
+mov r0.y, t2.w
+mov r0.x, t2.z
+texld r2, r1, s0
+texld r0, r0, s0
+texld r1, t3, s0
+mul r0.xyz, r0, c1.y
+mad r3.xyz, r3, c1.x, r0
+dp3 r0.x, t0, t0
+mad r3.xyz, r1, c1.z, r3
+rsq r0.x, r0.x
+mul r1.xyz, r0.x, t0
+mad r0.xyz, r2, c1.w, r3
+mad r0.xyz, r0, c2.x, -r1
+add r2.xyz, r0, c3.x
+mul r2.xyz, r1.z, r2
+mad r1.xyz, r2, c3.y, r1
+dp3 r0.x, t1, t1
+rsq r0.x, r0.x
+mul r0.xyz, r0.x, t1
+dp3 r0.x, r0, r1
+mul r1.z, -r0.x, r1
+mad r1.x, -r1.z, c3.z, -r0.z
+mov r1.y, c3.w
+mov r2.x, c4.y
+mov r2.z, c4.w
+mov r2.y, c4.z
+add r0.x, -r0, c5
+mov r0.w, c5.x
+texld r3, r1, s1
+mul r1.x, t0.w, c0.w
+mul r2.w, r1.x, c4.x
+mov r3.w, r1.x
+add r1, r3, -r2
+mad r1, r0.x, r1, r2
+mov r0.xyz, c0
+add r1, r1, -r0
+mad r0, t1.w, r1, r0
+mov oC0, r0

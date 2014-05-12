@@ -1,0 +1,215 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+attribute vec4 ig_Vertex;
+attribute vec3 ig_Normal;
+attribute vec4 ig_MultiTexCoord0;
+attribute vec4 ig_MultiTexCoord1;
+varying vec4 ig_TexCoord[4];
+
+// glslv output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslv
+// source file: atmosphere_sky_sun_on.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslv
+//program vmain
+//semantic vmain.modelView
+//semantic vmain.modelViewProj
+//semantic vmain.worldOriginInView
+//semantic vmain.cameraToSunDirAndExposure
+//semantic vmain.cameraLightInfo
+//semantic vmain.startupConsts
+//var float4x4 modelView :  : ig_ModelViewMatrix[0], 4 : 1 : 1
+//var float4x4 modelViewProj :  : ig_ModelViewProjectionMatrix[0], 4 : 2 : 1
+//var float3 worldOriginInView :  : _worldOriginInView : 3 : 1
+//var float4 cameraToSunDirAndExposure :  : _cameraToSunDirAndExposure : 4 : 1
+//var float4 cameraLightInfo :  : _cameraLightInfo : 5 : 1
+//var float4 startupConsts :  : _startupConsts : 6 : 1
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.rayleighColorAndSkyOpacity : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.vertToCameraDir : $vout.TEXCOORD1 : TEX1 : -1 : 1
+
+struct VertexOutput {
+    vec4 _pos;
+    vec4 _rayleighColorAndSkyOpacity;
+    vec4 _vertToCameraDir;
+};
+
+uniform mat4 ig_ModelViewMatrix;
+uniform mat4 ig_ModelViewProjectionMatrix;
+uniform vec3 _worldOriginInView;
+uniform vec4 _cameraToSunDirAndExposure;
+uniform vec4 _cameraLightInfo;
+uniform vec4 _startupConsts;
+vec3 _cameraPos0009;
+float _cameraHeightInv0009;
+vec3 _vertPos0009;
+vec3 _rayDir0009;
+float _farDist0009;
+vec3 _startPos0009;
+float _startAngle0009;
+float _startOffset0009;
+float _sampleLength0009;
+float _scaledLength0009;
+vec3 _sampleRay0009;
+vec3 _samplePoint0009;
+vec3 _frontColor0009;
+float _lightAngle10009;
+float _cameraAngle10009;
+float _sampleScatter10009;
+VertexOutput _vertOutput0009;
+float _cosVertAngle0009;
+vec4 _computedRayleighColorAndSkyOpacity0009;
+vec3 _TMP70009;
+vec4 _r0011;
+float _TMP24;
+float _a0025;
+float _TMP28;
+float _x0029;
+float _TMP34;
+float _x0035;
+float _TMP36;
+float _x0037;
+float _TMP40;
+float _b0041;
+float _c0041;
+float _determ0041;
+float _b0045;
+float _TMP46;
+float _TMP52;
+float _TMP56;
+float _x0057;
+float _TMP58;
+float _x0059;
+float _TMP66;
+float _a0067;
+float _TMP70;
+float _x0071;
+float _TMP78;
+float _x0079;
+float _TMP80;
+float _x0081;
+float _TMP82;
+float _x0083;
+float _TMP86;
+float _x0087;
+vec3 _x0091;
+vec3 _TMP92;
+vec4 _r0101;
+
+ // main procedure, the original name was vmain
+void main()
+{
+
+
+    _cameraPos0009 = -_worldOriginInView;
+    _cameraHeightInv0009 = 1.00000000E+000/_cameraLightInfo.x;
+
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0011.x = dot(ig_ModelViewMatrix[0], ig_Vertex);
+    _r0011.y = dot(ig_ModelViewMatrix[1], ig_Vertex);
+    _r0011.z = dot(ig_ModelViewMatrix[2], ig_Vertex);
+*/
+_r0011 = ig_ModelViewMatrix * ig_Vertex;
+    _vertPos0009 = _r0011.xyz - _worldOriginInView;
+    _rayDir0009 = _vertPos0009 - _cameraPos0009;
+    _a0025 = dot(_rayDir0009, _rayDir0009);
+    _TMP24 = 1.00000000E+000/inversesqrt(_a0025);
+    _farDist0009 = _TMP24;
+    _rayDir0009 = _rayDir0009/vec3(_TMP24, _TMP24, _TMP24);
+    if (_cameraLightInfo.x < 1.02665412E+000) { // if begin
+        _startPos0009 = _cameraPos0009;
+        _x0029 = 2.50117630E+002*(1.00000000E+000 - _cameraLightInfo.x);
+        _TMP28 = pow(2.71828198E+000, _x0029);
+        _startAngle0009 = dot(_rayDir0009, _cameraPos0009)*_cameraHeightInv0009;
+        _x0035 = 1.00000000E+000 - _startAngle0009;
+        _x0037 = -2.86999997E-003 + _x0035*(4.58999991E-001 + _x0035*(3.82999992E+000 + _x0035*(-6.80000019E+000 + _x0035*5.25000000E+000)));
+        _TMP36 = pow(2.71828198E+000, _x0037);
+        _TMP34 = 1.50000006E-001*_TMP36;
+        _startOffset0009 = _TMP28*_TMP34;
+    } else {
+        _b0041 = 2.00000000E+000*dot(_cameraPos0009, _rayDir0009);
+        _c0041 = _cameraLightInfo.w - 1.05401874E+000;
+        _b0045 = _b0041*_b0041 - 4.00000000E+000*_c0041;
+        _determ0041 = max(0.00000000E+000, _b0045);
+        _TMP46 = 1.00000000E+000/inversesqrt(_determ0041);
+        _TMP40 = 5.00000000E-001*(-_b0041 - _TMP46);
+        _startPos0009 = _cameraPos0009 + _rayDir0009*_TMP40;
+        _farDist0009 = _TMP24 - _TMP40;
+        _startAngle0009 = dot(_rayDir0009, _startPos0009)/1.02665412E+000;
+        _TMP52 = pow(2.71828198E+000, -6.66666651E+000);
+        _x0057 = 1.00000000E+000 - _startAngle0009;
+        _x0059 = -2.86999997E-003 + _x0057*(4.58999991E-001 + _x0057*(3.82999992E+000 + _x0057*(-6.80000019E+000 + _x0057*5.25000000E+000)));
+        _TMP58 = pow(2.71828198E+000, _x0059);
+        _TMP56 = 1.50000006E-001*_TMP58;
+        _startOffset0009 = _TMP52*_TMP56;
+    } // end if
+    _sampleLength0009 = _farDist0009/2.00000000E+000;
+    _scaledLength0009 = _sampleLength0009*3.75176468E+001;
+    _sampleRay0009 = _rayDir0009*_sampleLength0009;
+    _samplePoint0009 = _startPos0009 + _sampleRay0009*5.00000000E-001;
+    _a0067 = dot(_samplePoint0009, _samplePoint0009);
+    _TMP66 = 1.00000000E+000/inversesqrt(_a0067);
+    _x0071 = 2.50117630E+002*(1.00000000E+000 - _TMP66);
+    _TMP70 = pow(2.71828198E+000, _x0071);
+    _lightAngle10009 = dot(_cameraToSunDirAndExposure.xyz, _samplePoint0009)/_TMP66;
+    _cameraAngle10009 = dot(_rayDir0009, _samplePoint0009)/_TMP66;
+    _x0079 = 1.00000000E+000 - _lightAngle10009;
+    _x0083 = -2.86999997E-003 + _x0079*(4.58999991E-001 + _x0079*(3.82999992E+000 + _x0079*(-6.80000019E+000 + _x0079*5.25000000E+000)));
+    _TMP82 = pow(2.71828198E+000, _x0083);
+    _TMP78 = 1.50000006E-001*_TMP82;
+    _x0081 = 1.00000000E+000 - _cameraAngle10009;
+    _x0087 = -2.86999997E-003 + _x0081*(4.58999991E-001 + _x0081*(3.82999992E+000 + _x0081*(-6.80000019E+000 + _x0081*5.25000000E+000)));
+    _TMP86 = pow(2.71828198E+000, _x0087);
+    _TMP80 = 1.50000006E-001*_TMP86;
+    _sampleScatter10009 = _startOffset0009 + _TMP70*(_TMP78 - _TMP80);
+    _x0091 = -_sampleScatter10009*vec3( 1.88559800E-001, 3.10178369E-001, 6.29694700E-001);
+    _TMP92 = vec3(pow(2.71828198E+000, _x0091.x), pow(2.71828198E+000, _x0091.y), pow(2.71828198E+000, _x0091.z));
+    _frontColor0009 = _TMP92*(_TMP70*_scaledLength0009);
+    _samplePoint0009 = _samplePoint0009 + _sampleRay0009;
+    _a0067 = dot(_samplePoint0009, _samplePoint0009);
+    _TMP66 = 1.00000000E+000/inversesqrt(_a0067);
+    _x0071 = 2.50117630E+002*(1.00000000E+000 - _TMP66);
+    _TMP70 = pow(2.71828198E+000, _x0071);
+    _lightAngle10009 = dot(_cameraToSunDirAndExposure.xyz, _samplePoint0009)/_TMP66;
+    _cameraAngle10009 = dot(_rayDir0009, _samplePoint0009)/_TMP66;
+    _x0079 = 1.00000000E+000 - _lightAngle10009;
+    _x0083 = -2.86999997E-003 + _x0079*(4.58999991E-001 + _x0079*(3.82999992E+000 + _x0079*(-6.80000019E+000 + _x0079*5.25000000E+000)));
+    _TMP82 = pow(2.71828198E+000, _x0083);
+    _TMP78 = 1.50000006E-001*_TMP82;
+    _x0081 = 1.00000000E+000 - _cameraAngle10009;
+    _x0087 = -2.86999997E-003 + _x0081*(4.58999991E-001 + _x0081*(3.82999992E+000 + _x0081*(-6.80000019E+000 + _x0081*5.25000000E+000)));
+    _TMP86 = pow(2.71828198E+000, _x0087);
+    _TMP80 = 1.50000006E-001*_TMP86;
+    _sampleScatter10009 = _startOffset0009 + _TMP70*(_TMP78 - _TMP80);
+    _x0091 = -_sampleScatter10009*vec3( 1.88559800E-001, 3.10178369E-001, 6.29694700E-001);
+    _TMP92 = vec3(pow(2.71828198E+000, _x0091.x), pow(2.71828198E+000, _x0091.y), pow(2.71828198E+000, _x0091.z));
+    _frontColor0009 = _frontColor0009 + _TMP92*(_TMP70*_scaledLength0009);
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0101.x = dot(ig_ModelViewProjectionMatrix[0], ig_Vertex);
+    _r0101.y = dot(ig_ModelViewProjectionMatrix[1], ig_Vertex);
+    _r0101.z = dot(ig_ModelViewProjectionMatrix[2], ig_Vertex);
+    _r0101.w = dot(ig_ModelViewProjectionMatrix[3], ig_Vertex);
+*/
+_r0101 = ig_ModelViewProjectionMatrix * ig_Vertex;
+    _vertOutput0009._pos = _r0101;
+    _vertOutput0009._pos.z = min(_r0101.z, _r0101.w);
+    _cosVertAngle0009 = -dot(_rayDir0009, _cameraPos0009)*_cameraHeightInv0009;
+    _TMP70009 = _frontColor0009*vec3( 3.50127786E-001, 5.92080235E-001, 1.22773767E+000);
+    _computedRayleighColorAndSkyOpacity0009 = vec4(_TMP70009.x, _TMP70009.y, _TMP70009.z, _startupConsts.w);
+    _vertOutput0009._rayleighColorAndSkyOpacity = _cosVertAngle0009 > _cameraLightInfo.z ? vec4( 0.00000000E+000, 0.00000000E+000, 0.00000000E+000, 0.00000000E+000) : _computedRayleighColorAndSkyOpacity0009;
+    _vertOutput0009._vertToCameraDir.xyz = _cameraPos0009 - _vertPos0009;
+    _vertOutput0009._vertToCameraDir.w = 1.00000000E+000;
+    ig_TexCoord[0] = _vertOutput0009._rayleighColorAndSkyOpacity;
+    ig_TexCoord[1] = _vertOutput0009._vertToCameraDir;
+    gl_Position = _vertOutput0009._pos;
+    return;
+} // main end

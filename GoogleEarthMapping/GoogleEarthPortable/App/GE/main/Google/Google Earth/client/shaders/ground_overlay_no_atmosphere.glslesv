@@ -1,0 +1,69 @@
+//!GL2
+#if defined(GL_ES)
+precision mediump float;
+#endif
+
+
+attribute vec4 ig_Vertex;
+attribute vec4 ig_Color;
+attribute vec3 ig_Normal;
+attribute vec4 ig_MultiTexCoord0;
+attribute vec4 ig_MultiTexCoord1;
+varying vec4 ig_TexCoord[4];
+varying vec4 ig_VaryingColor;
+// glslv output by Cg compiler
+// cgc version 3.0.0007, build date Jul 22 2010
+// command line args: -profile glslv
+// source file: ground_overlay_no_atmosphere.cg
+//vendor NVIDIA Corporation
+//version 3.0.0.07
+//profile glslv
+//program vmain
+//semantic vmain.modelViewProj
+//semantic vmain.textureMatrix
+//var float4x4 modelViewProj :  : ig_ModelViewProjectionMatrix[0], 4 : 3 : 1
+//var float4x4 textureMatrix :  : ig_TextureMatrix[0], 4 : 4 : 1
+//var float4 position : $vin.POSITION : ATTR0 : 0 : 1
+//var float4 texCoord : $vin.TEXCOORD0 : ATTR8 : 1 : 1
+//var float4 vertexColor : $vin.COLOR : ATTR3 : 2 : 1
+//var float4 vmain.pos : $vout.POSITION : HPOS : -1 : 1
+//var float4 vmain.texCoord : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float4 vmain.color : $vout.COLOR : COL0 : -1 : 1
+
+struct VertexOutput {
+    vec4 _pos;
+    vec4 _texCoord2;
+    vec4 _color;
+};
+
+uniform mat4 ig_ModelViewProjectionMatrix;
+uniform mat4 ig_TextureMatrix;
+vec4 _r0003;
+vec4 _r0013;
+
+ // main procedure, the original name was vmain
+void main()
+{
+
+
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0003.x = dot(ig_ModelViewProjectionMatrix[0], ig_Vertex);
+    _r0003.y = dot(ig_ModelViewProjectionMatrix[1], ig_Vertex);
+    _r0003.z = dot(ig_ModelViewProjectionMatrix[2], ig_Vertex);
+    _r0003.w = dot(ig_ModelViewProjectionMatrix[3], ig_Vertex);
+*/
+_r0003 = ig_ModelViewProjectionMatrix * ig_Vertex;
+/* The mat-vec-multiplication-as-dot-products approach doesn't
+   work with column major matrices
+    _r0013.x = dot(ig_TextureMatrix[0], ig_MultiTexCoord0);
+    _r0013.y = dot(ig_TextureMatrix[1], ig_MultiTexCoord0);
+    _r0013.z = dot(ig_TextureMatrix[2], ig_MultiTexCoord0);
+    _r0013.w = dot(ig_TextureMatrix[3], ig_MultiTexCoord0);
+*/
+_r0013 = ig_TextureMatrix * ig_MultiTexCoord0;
+    ig_TexCoord[0] = _r0013;
+    ig_VaryingColor = ig_Color;
+    gl_Position = _r0003;
+    return;
+} // main end
